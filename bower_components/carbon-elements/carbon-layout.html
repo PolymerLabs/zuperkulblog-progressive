@@ -1,0 +1,110 @@
+<dom-module id="carbon-layout">
+
+  <template>
+
+    <style>
+
+      layer, scrim {
+        position: fixed;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        left: 0;
+        background-color: transparent;
+      }
+
+      scrim {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+    </style>
+
+    <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      properties: {
+        _stack: {
+          value: function() {
+            return [];
+          }
+        }
+      },
+
+      popup: function(node, options) {
+        options = options || Polymer.nob;
+        //
+        var left = options.left || Math.round((document.documentElement.clientWidth - 400) / 2);
+        var top = options.top || Math.round((document.documentElement.clientHeight - 200) / 2);
+        //
+        var s = node.style;
+        s.display = 'block';
+        s.pointerEvents = 'initial';
+        s.position = 'fixed';
+        s.top = 0;
+        s.left = left + 'px'
+        if (options.animate) {
+          s.transition = 'transform 200ms';
+        }
+        //s.opacity = 1;
+        //
+        var layer = this.create('layer');
+        var scrim = this.create('scrim');
+        if (options.bg) {
+          scrim.style.backgroundColor = options.bg;
+        }
+        /*
+        if (options.modal && !this._hasModal) {
+          scrim.style.backgroundColor = 'black';
+          this._hasModal = true;
+        }
+        */
+        layer.appendChild(scrim);
+        layer.appendChild(node);
+        //
+        this._stack.push({layer: layer, node: node, options: options});
+        Polymer.dom(this.root).appendChild(layer);
+        //
+        if (node.popup) {
+          node.popup(this);
+        }
+        //
+        if (options.animate) {
+          this.translate3d(0, -top-top-top + 'px', 0, node);
+          this.async(function() {
+            this.translate3d(0, top + 'px', 0, node);
+          }, 1);
+        } else {
+          this.translate3d(0, top + 'px', 0, node);
+        }
+      },
+
+      close: function() {
+        var info = this._stack.pop();
+        if (info) {
+          if (info.animate) {
+            this.translate3d(0, '-600px', 0, info.node);
+            this.async(function() {
+              info.layer.remove();
+            }, 200);
+          } else {
+            info.layer.remove();
+          }
+        }
+        /*
+        this._hasModal = this._stack.some(function(i) {
+          return Boolean(i.modal);
+        });
+        */
+      }
+
+    });
+
+  </script>
+
+</dom-module>

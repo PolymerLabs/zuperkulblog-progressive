@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+
+  <title>carbon-layout demo</title>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="https://polygit.org/components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+  <link rel="import" href="components.html">
+
+  <link rel="import" href="../../carbon-layout.html">
+  <link rel="import" href="../../carbon-menu.html">
+
+  <style>
+
+    body {
+      font-family: sans-serif;
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+
+    [popup], [dialog] {
+      display: none;
+      background-color: white;
+      color: #555;
+      -webkit-box-shadow: 0px 0px 8px 3px rgba(102,102,102,0.5);
+      -moz-box-shadow: 0px 0px 8px 3px rgba(102,102,102,0.5);
+      box-shadow: 0px 0px 8px 3px rgba(102,102,102,0.5);
+    }
+
+    [dialog] {
+      width: 400px;
+      height: 200px;
+      margin: auto;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <x-example></x-example>
+
+  <dom-module id="x-example">
+    <template>
+
+      <carbon-layout id="layout">
+        Welcome to our Static Content
+        <hr>
+        <button on-tap="dialog">Dialog One</button>
+        <button on-tap="popdown">Menu</button>
+      </carbon-layout>
+
+      <div dialog id="dialog">
+        <div>Hello Dialog</div>
+        <br>
+        <button on-tap="dialog2">Dialog Two</button>
+        <button on-tap="dismiss">Close</button>
+      </div>
+
+      <div dialog id="dialog2">
+        <div>Hello Dialog 2</div>
+        <button on-tap="dismiss">Close</button>
+      </div>
+
+      <!--
+      <div dialog id="popdown" style="width: auto; height: auto;" on-dismiss="dismiss">
+        <carbon-menu id="menu" items='[{"text": "PolymerElements"}, {"text": "Polymer"}, {"text": "sjmiles"}]'></carbon-menu>
+      </div>
+      -->
+
+      <carbon-menu popup id="popdown" items='[{"text": "PolymerElements"}, {"text": "Polymer"}, {"text": "sjmiles"}]' on-dismiss="dismiss"></carbon-menu>
+
+    </template>
+    <script>
+
+      Polymer({
+
+        dialog: function(e) {
+          this.$.layout.popup(this.$.dialog, {bg: 'black', animate: true});
+        },
+
+        dialog2: function(e) {
+          this.$.layout.popup(this.$.dialog2, {animate: true});
+          e.stopPropagation();
+        },
+
+        popdown: function(e) {
+          var r = e.target.getBoundingClientRect();
+          this.$.layout.popup(this.$.popdown, {left: r.left, top: r.bottom});
+          //this.$.menu.popup();
+          e.stopPropagation();
+        },
+
+        dismiss: function(e) {
+          this.$.layout.close();
+          e.stopPropagation();
+        }
+
+      });
+
+    </script>
+  </dom-module>
+
+</body>
+</html>

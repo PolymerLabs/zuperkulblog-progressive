@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+<head>
+
+  <title>pulp-import: explainer</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <link href="../config.html" rel="import">
+
+  <script>
+    manifest = {
+      //'.*': 'https://rawgit.com/sjmiles/lab/gh-pages/cdn/'
+      '.*': 'https://cdn.rawgit.com/sjmiles/lab/d19c43c5aa3fd930445453a4e9077c84e809228c/cdn/'
+    };
+  </script>
+
+  <link href="/!/pulp-elements/pulp-router.html" is="pulp-import">
+  <link href="/!/iron-elements/iron-selector.html" is="pulp-import">
+  <link href="/!/iron-elements/flex-layout/layout.html" is="pulp-import">
+
+
+  <!--
+  <link href="sjmiles/lab/cdn/!/pulp-elements/pulp-router.html" is="git-import">
+  <link href="sjmiles/lab/cdn/!/iron-elements/iron-selector.html" is="git-import">
+  <link href="sjmiles/lab/cdn/!/iron-elements/flex-layout/layout.html" is="git-import">
+  -->
+
+  <!--
+
+  <script>
+    gmanifest = {
+      'pulp-*': 'sjmiles/lab/cdn/!/pulp-elements/',
+      'iron-*': 'sjmiles/lab/cdn/!/iron-elements/',
+      'flex-*': 'sjmiles/lab/cdn/!/iron-elements/',
+    };
+  </script>
+
+  <link import="pulp-router" is="git-import">
+  <link import="iron-selector" is="git-import">
+  <link import="flex-layout/layout" is="git-import">
+
+  -->
+
+  <style>
+
+    body {
+      font-family: sans-serif;
+    }
+    a {
+      display: block;
+      padding: 4px;
+    }
+    input {
+      padding: 4px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+<template is="dom-bind">
+
+  <p>Choose a sample route:</p>
+  <p>
+
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">one</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">two</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">three</a>
+
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">one/other</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">one/user</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">one/user/Joe/profile</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">two/settings</a>
+    <a href="javascript:void(0)" onclick="view.route=this.textContent">three/report</a>
+
+  </p>
+
+  <br>
+  <br>
+  <p>
+  Or enter a custom route: <input size="50" value="{{route::input}}">
+  </p>
+  <br>
+  <br>
+
+  <!-- views treat routes as pure data -->
+  <main-view id="view" route="{{route}}"></main-view>
+
+</template>
+
+<!-- main-view.html -->
+
+<dom-module id="main-view">
+  <style>
+
+    :host {
+      display: block;
+    }
+
+    [name] {
+      padding: 6px;
+      margin: 10px;
+      border: 2px solid lightblue;
+      @apply(--layout-flex);
+    }
+
+    [active] {
+      margin: 4px;
+      border: 8px solid red;
+    }
+
+    [columns] {
+      @apply(--layout-horizontal);
+    }
+
+  </style>
+  <template>
+
+    <pulp-route route="{{route}}" matches=":page" page="{{page}}"></pulp-route>
+
+    <pulp-route route="{{route}}" matches="one" subroute="{{subrouteOne}}"></pulp-route>
+    <pulp-route route="{{route}}" matches="two" subroute="{{subrouteTwo}}"></pulp-route>
+    <pulp-route route="{{route}}" matches="three" subroute="{{subrouteThree}}"></pulp-route>
+
+    <iron-selector columns selected="{{page}}" attr-for-selected="name" selected-attribute="active">
+
+      <div name="one">
+
+        <p>Page <b>One</b></p>
+        <p>subroute: <span>{{subrouteOne}}</span></p>
+
+        <pulp-route route="{{subrouteOne}}" matches=":section" section="{{section}}"></pulp-route>
+        <pulp-route route="{{subrouteOne}}" matches="user/:user" user="{{user}}" subroute="{{userSubroute}}"></pulp-route>
+
+        <iron-selector columns selected="{{section}}" attr-for-selected="name" selected-attribute="active">
+
+          <div name="other">
+            <p><b>Other</b> Page</p>
+          </div>
+
+          <div name="user">
+            <p><b>User</b> Page</p>
+            <p>name: <b>{{user}}</b></p>
+            <p>subroute: <b>{{userSubroute}}</b></p>
+          </div>
+
+        </iron-selector>
+
+      </div>
+
+      <div name="two">
+        <p>Page <b>Two</b></p>
+        <p>subroute: <span>{{subrouteTwo}}</span></p>
+      </div>
+
+      <div name="three">
+        <p>Page <b>Three</b></p>
+        <p>subroute: <span>{{subrouteThree}}</span></p>
+      </div>
+
+    </iron-selector>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      properties: {
+
+        route: {
+          value: '',
+          // important to notify on `route` changes if we care to affect the route from here
+          notify: true
+        },
+
+        section: {
+          observer: '_sectionChanged'
+        }
+      },
+
+      _sectionChanged: function(section) {
+        if (section != 'user') {
+          // Boom!
+          //this.section = 'other';
+        }
+      }
+
+    });
+
+  </script>
+</dom-module>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<dom-module id="carbon-menu">
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        background-color: white;
+        max-height: 240px;
+        max-width: 300px;
+        overflow-y: auto;
+      }
+
+      item {
+        display: block;
+        padding: 6px;
+        border-bottom: 1px solid whitesmoke;
+      }
+
+      item[selected] {
+        background-color: gray;
+        color: #eeeeff;
+      }
+
+      item:focus {
+        font-weight: bold;
+      }
+
+    </style>
+
+    <template is="dom-repeat" items="{{menuItems}}" on-dom-change="domChange">
+
+      <item tabindex="0" on-tap="select" on-focus="onFocus" style$="{{itemStyle(item)}}">{{item.text}}</item>
+
+    </template>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      properties: {
+        items: Array,
+        selected: {
+          notify: true
+        }
+      },
+
+      itemStyle: function(item) {
+        if (!item.text) {
+          return 'padding:0;height:0;border:none;';
+        } else {
+          return '';
+        }
+      },
+
+      popup: function() {
+        if (!this.selected) {
+          this.selected = 0;
+        }
+        var items = this.items.slice(0);
+        items.unshift({first: true});
+        items.push({last: true})
+        this.menuItems = items;
+      },
+
+      domChange: function() {
+        var items = Polymer.dom(this.root).querySelectorAll('item');
+        var item = items[(this.selected || 0) + 1];
+        if (item) {
+          item.focus();
+        }
+      },
+
+      onFocus: function(e) {
+        if (e.model.index == 0) {
+          e.target.nextElementSibling.focus();
+        } else if (e.model.index == this.menuItems.length - 1) {
+          e.target.previousElementSibling.focus();
+        }
+      },
+
+      select: function(e) {
+        this.selected = e.model.index - 1;
+        var item = e.model.item;
+        var node = e.currentTarget;
+        node.setAttribute('selected', 'selected');
+        this.async(function() {
+          node.removeAttribute('selected');
+          this.async(function() {
+            node.setAttribute('selected', 'selected');
+            this.async(function() {
+              this.fire('dismiss');
+              node.removeAttribute('selected');
+            }, 100);
+          }, 50);
+        }, 50);
+      }
+
+    });
+
+  </script>
+
+</dom-module>

@@ -1,0 +1,134 @@
+<dom-module id="pulp-import">
+<script>
+  Polymer.PulpImportBehavior = {
+
+    properties: {
+
+      href: {
+        observer: '_hrefChanged'
+      },
+
+      _cache: {
+        value: {
+          'polymer/polymer.html': true
+        }
+      }
+
+    },
+
+    _crackSrc: function(src) {
+      var i = src.indexOf('/!/');
+      if (i >= 0) {
+        var parts = src.slice(i + 3).split('/');
+      } else {
+        var i = src.indexOf('/components/');
+        if (i >= 0) {
+          var parts = src.slice(i + 12).split('/');
+        } else {
+          return;
+        }
+      }
+      var component = parts[0];
+      var path = parts.join('/');
+
+      //console.log(/*'org:', org,*/ 'component:', component + ', path:', path);
+
+      return {
+        //org: org,
+        component: component,
+        path: path
+      };
+    },
+
+    _debounce: function(path) {
+      if (path) {
+        if (this._cache[path]) {
+          return false;
+        }
+        this._cache[path] = true;
+      }
+      return true;
+    },
+
+    _hrefChanged: function(href) {
+      href = href.replace('%components', '../components');
+      var info = this._crackSrc(href);
+      if (info && window.manifest) {
+        for (var n in manifest) {
+          if (info.component.match(n)) {
+            href = manifest[n] + info.path;
+            break;
+          };
+        }
+      }
+      if (!info || this._debounce(info.path)) {
+        this._import(href.replace('!/', ''));
+        //console.log('loading: ', this);
+      } else {
+        //console.warn('preventing: ', this);
+      }
+    },
+
+    _import: function(href) {
+      this.parentNode.insertBefore(this.create('link', {rel: 'import', href: href}), this);
+    }
+
+  };
+
+  Polymer({
+    is: 'pulp-import',
+    extends: 'link',
+    behaviors: [
+      Polymer.PulpImportBehavior
+    ]
+  });
+
+  Polymer({
+    is: 'git-import',
+    extends: 'link',
+    behaviors: [
+      Polymer.PulpImportBehavior
+    ],
+    properties: {
+      'href': {
+        observer: '_hrefChanged'
+      }
+    },
+    _hrefChanged: function(href) {
+      var path = href.split('/!/');
+      var lhs = path[0].split('/');
+      var org = lhs.shift();
+      var repo = lhs.shift();
+      var prefix = [org, repo].join('/');
+      var suffix = [lhs, path[1]].join('/')
+      var href = ['https://rawgit.com', prefix, 'gh-pages', suffix].join('/');
+      Polymer.PulpImportBehavior._hrefChanged.call(this, href);
+    }
+  });
+
+
+  Polymer({
+    is: 'git-import2',
+    extends: 'link',
+    behaviors: [
+      Polymer.PulpImportBehavior
+    ],
+    properties: {
+      'import': {
+        observer: '_importChanged'
+      }
+    },
+    _importChanged: function(imprt) {
+      var path = imprt.split('/!/');
+      var lhs = path[0].split('/');
+      var org = lhs.shift();
+      var repo = lhs.shift();
+      var prefix = [org, repo].join('/');
+      var suffix = [lhs, path[1]].join('/')
+      var href = ['https://rawgit.com', prefix, 'gh-pages', suffix, '.html'].join('/');
+      this.href = href;
+    }
+  });
+
+</script>
+</dom-module>

@@ -1,0 +1,14 @@
+{
+  "name": "carbon-elements",
+  "homepage": "https://github.com/PolymerLabs/carbon-elements",
+  "_release": "17875eb2df",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "17875eb2dfea9a3399d3af5fbfa1918cf0dc9917"
+  },
+  "_source": "git://github.com/PolymerLabs/carbon-elements.git",
+  "_target": "*",
+  "_originalSource": "PolymerLabs/carbon-elements",
+  "_direct": true
+}
