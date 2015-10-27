@@ -20,14 +20,14 @@ function finishLazyLoading() {
   window.Polymer = window.Polymer || {dom: 'shadow'};
 
   // 6. Fade splash screen, then remove.
-  // var onImportLoaded = function() {
-  //   var loadEl = document.getElementById('splash');
-  //   loadEl.addEventListener('transitionend', loadEl.remove);
-  //
-  //   document.body.classList.remove('loading');
-  //
-  //   // App is visible and ready to load some data!
-  // };
+  var onImportLoaded = function() {
+    // var loadEl = document.getElementById('splash');
+    // loadEl.addEventListener('transitionend', loadEl.remove);
+    //
+    // document.body.classList.remove('loading');
+
+    console.log('App is visible and ready to load some data!');
+  };
 
   var link = document.querySelector('#bundle');
 

@@ -1,2 +1,4 @@
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<!-- This ordering is important! Because we're async loading these imports
+blog-app has to have loaded and upgraded before iron-ajax attempts to make a request. -->
 <link rel="import" href="blog-app.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
