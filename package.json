@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/robdodson/zuperkulblog/issues"
   },
-  "homepage": "https://github.com/robdodson/zuperkulblog#readme"
+  "homepage": "https://github.com/robdodson/zuperkulblog#readme",
+  "devDependencies": {
+    "http2-push-manifest": "0.0.2"
+  }
 }
