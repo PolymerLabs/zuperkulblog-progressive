@@ -1,0 +1,47 @@
+application: zuperkulblog
+version: 0_0_0
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+
+handlers:
+- url: /scripts
+  static_dir: static/scripts
+  secure: always
+
+- url: /bower_components
+  static_dir: static/bower_components
+  secure: always
+
+- url: /elements
+  static_dir: static/elements
+  secure: always
+
+- url: /data
+  static_dir: static/data
+  secure: always
+
+- url: /
+  static_files: static/index.html
+  upload: static/index.html
+  secure: always
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?bower\.json
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.bak$
+- ^(.*/)?node_modules/.*
+- ^(.*/)?tests/.*
+- ^.*.md|markdown
