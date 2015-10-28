@@ -25,11 +25,6 @@ handlers:
   static_dir: static/data
   secure: always
 
-# - url: /
-#   static_files: static/index.html
-#   upload: static/index.html
-#   secure: always
-
 - url: .*
   script: main.app
   secure: always

@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <title>ZUPERK&Uuml;LBLOG</title>
 
-  <link id="bundle" rel="import" href="elements/elements.html">
+  <link async id="bundle" rel="import" href="elements/elements.html">
 
   <style>
 
@@ -29,16 +29,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </style>
 
 </head>
-<body unresolved>
+<body>
 
-  <template is="dom-bind">
+  <template is="dom-bind" id="app">
 
     <blog-app articles="{{articles}}"></blog-app>
-    <iron-ajax url="data/articles.json" auto last-response="{{articles}}"></iron-ajax>
+    <iron-ajax id="ajax"
+               url="data/articles.json"
+               last-response="{{articles}}"
+               auto>
+    </iron-ajax>
 
   </template>
 
-  <script src="scripts/app.js"></script>
+  <script async src="scripts/app.js"></script>
 
 </body>
 </html>

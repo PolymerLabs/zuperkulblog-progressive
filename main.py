@@ -29,9 +29,11 @@ class MainHandler(http2.PushHandler):
 
   @http2.push('push.json')
   def get(self):
-    path = os.path.join(os.path.dirname(__file__), 'static/index.html')
-    return self.response.out.write(template.render(path, {}))
-
+    name = os.path.join(os.path.dirname(__file__), 'static/index.html')
+    f = open(name, 'r')
+    c = f.read()
+    f.close()
+    return self.response.write(c)
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
