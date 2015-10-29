@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/robdodson/zuperkulblog#readme",
   "devDependencies": {
+    "gulp-vulcanize": "^6.0.1",
     "http2-push-manifest": "0.0.2"
   }
 }

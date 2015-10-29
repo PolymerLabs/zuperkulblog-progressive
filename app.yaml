@@ -10,19 +10,19 @@ libraries:
 
 handlers:
 - url: /scripts
-  static_dir: static/scripts
+  static_dir: dist/static/scripts
   secure: always
 
 - url: /bower_components
-  static_dir: static/bower_components
+  static_dir: dist/static/bower_components
   secure: always
 
 - url: /elements
-  static_dir: static/elements
+  static_dir: dist/static/elements
   secure: always
 
 - url: /data
-  static_dir: static/data
+  static_dir: dist/static/data
   secure: always
 
 - url: .*
