@@ -45,4 +45,12 @@ gulp.task('vulcanize', function() {
       .pipe(gulp.dest('dist/static/elements'));
 });
 
+gulp.task('watch', function() {
+    gulp.watch([
+      'app/static/index.html',
+      'app/static/favicon.ico',
+      'app/static/{data,scripts}/**/*'
+    ], ['default']);
+});
+
 gulp.task('default', ['copy', 'vulcanize']);
