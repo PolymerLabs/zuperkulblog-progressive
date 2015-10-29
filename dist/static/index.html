@@ -8,24 +8,31 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<!--
+PERF IMPROVEMENTS
+- async wc-lite.js
+- async import
+- no <body unresolved>
+- move markup of blog-app into dom-bind template in main page - something to paint, faster
+- vulcanize + crisper --script-in-head - load elements.v.js at bottom of main page to parallelize download
+- fetch() instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
+-->
+
 <!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
   <title>ZUPERK&Uuml;LBLOG</title>
 
   <link id="bundle" rel="import" href="elements/elements.html">
 
-  <style>
-
+  <style media="screen">
     body {
       margin: 0;
       font-family: 'Roboto', 'Noto', sans-serif;
       background-color: #fafafa;
     }
-
   </style>
 
 </head>
@@ -34,15 +41,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
 
     <blog-app articles="{{articles}}"></blog-app>
-    <iron-ajax id="ajax"
-               url="data/articles.json"
-               last-response="{{articles}}"
-               auto>
-    </iron-ajax>
 
   </template>
 
-  <script async src="scripts/app.js"></script>
+  <script src="scripts/app.js"></script>
 
 </body>
 </html>

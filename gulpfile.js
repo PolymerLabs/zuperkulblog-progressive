@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 var gulp = require('gulp');
 var vulcanize = require('gulp-vulcanize');
+var crisper = require('gulp-crisper');
 var merge = require('merge-stream');
 
 gulp.task('copy', function() {
@@ -33,8 +34,13 @@ gulp.task('vulcanize', function() {
       .pipe(vulcanize({
           abspath: '',
           excludes: [],
-          stripExcludes: false
+          stripExcludes: false,
+          inlineScripts: false
       }))
+      // .pipe(crisper({
+      //     scriptInHead: true,
+      //     onlySplit: false
+      // }))
       .pipe(gulp.dest('dist/static/elements'));
 });
 

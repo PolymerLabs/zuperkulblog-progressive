@@ -40,3 +40,13 @@ function finishLazyLoading() {
     link.addEventListener('load', onImportLoaded);
   }
 }
+
+// Kick off fetching data right away.
+var app = document.querySelector('#app');
+fetch('data/articles.json')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(articles) {
+    app.articles = articles;
+  });
