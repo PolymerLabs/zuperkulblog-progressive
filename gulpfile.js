@@ -11,13 +11,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 var gulp = require('gulp');
 var vulcanize = require('gulp-vulcanize');
+var merge = require('merge-stream');
 
-gulp.task('default', function () {
-    return gulp.src('app/static/elements/elements.html')
-        .pipe(vulcanize({
-            abspath: '',
-            excludes: [],
-            stripExcludes: false
-        }))
-        .pipe(gulp.dest('dist'));
+gulp.task('copy', function() {
+  var app = gulp.src([
+      'app/static/index.html',
+      'app/static/{data,scripts}/**/*'
+    ])
+    .pipe(gulp.dest('dist/static'));
+
+  var bower = gulp.src([
+      'app/static/bower_components/{webcomponentsjs,promise-polyfill}/**/*'
+    ])
+    .pipe(gulp.dest('dist/static/bower_components'));
+
+  return merge(app, bower);
 });
+
+gulp.task('vulcanize', function() {
+  return gulp.src('app/static/elements/elements.html')
+      .pipe(vulcanize({
+          abspath: '',
+          excludes: [],
+          stripExcludes: false
+      }))
+      .pipe(gulp.dest('dist/static/elements'));
+});
+
+gulp.task('default', ['copy', 'vulcanize']);

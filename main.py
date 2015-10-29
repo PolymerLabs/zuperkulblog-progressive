@@ -29,7 +29,7 @@ class MainHandler(http2.PushHandler):
 
   @http2.push('push.json')
   def get(self):
-    name = os.path.join(os.path.dirname(__file__), 'app/static/index.html')
+    name = os.path.join(os.path.dirname(__file__), 'dist/static/index.html')
     f = open(name, 'r')
     c = f.read()
     f.close()
