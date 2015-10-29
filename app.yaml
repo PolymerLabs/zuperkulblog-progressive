@@ -9,6 +9,11 @@ libraries:
   version: "2.5.2"
 
 handlers:
+- url: /favicon.ico
+  static_files: dist/static/favicon.ico
+  upload: dist/static/favicon.ico
+  secure: always
+
 - url: /scripts
   static_dir: dist/static/scripts
   secure: always

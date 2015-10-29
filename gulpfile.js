@@ -17,6 +17,7 @@ var merge = require('merge-stream');
 gulp.task('copy', function() {
   var app = gulp.src([
       'app/static/index.html',
+      'app/static/favicon.ico',
       'app/static/{data,scripts}/**/*'
     ])
     .pipe(gulp.dest('dist/static'));
