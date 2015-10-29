@@ -1,5 +1,6 @@
 {
+  "/elements/elements.html": 1,
   "/scripts/app.js": 1,
   "/bower_components/promise-polyfill/Promise.js": 1,
-  "/data/article.json": 1
+  "/data/articles.json": 1
 }
