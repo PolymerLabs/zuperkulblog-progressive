@@ -14,6 +14,7 @@ var del = require('del');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
 var merge = require('merge-stream');
+var shell = require('gulp-shell')
 
 gulp.task('clean', function() {
   return del(['dist']);
@@ -28,27 +29,31 @@ gulp.task('copy', ['clean'], function() {
     .pipe(gulp.dest('dist/static'));
 
   var bower = gulp.src([
-      'app/static/bower_components/{webcomponentsjs,promise-polyfill}/**/*'
+      'app/static/bower_components/{webcomponentsjs,promise-polyfill,page}/**/*'
     ])
     .pipe(gulp.dest('dist/static/bower_components'));
 
   return merge(app, bower);
 });
 
-gulp.task('vulcanize', ['copy'], function() {
-  return gulp.src('app/static/elements/critical.html')
-      .pipe(vulcanize({
-          abspath: '',
-          excludes: [],
-          stripExcludes: false,
-          inlineScripts: false
-      }))
-      // .pipe(crisper({
-      //     scriptInHead: true,
-      //     onlySplit: false
-      // }))
-      .pipe(gulp.dest('dist/static/elements'));
-});
+// gulp.task('vulcanize', ['copy'], function() {
+//   return gulp.src('app/static/elements/critical.html')
+//       .pipe(vulcanize({
+//           abspath: '',
+//           excludes: [],
+//           stripExcludes: false,
+//           inlineScripts: false
+//       }))
+//       // .pipe(crisper({
+//       //     scriptInHead: true,
+//       //     onlySplit: false
+//       // }))
+//       .pipe(gulp.dest('dist/static/elements'));
+// });
+
+gulp.task('shard', ['copy'], shell.task([
+  'node_modules/.bin/web-component-shards -r app -e static/elements/critical.html static/elements/non-critical.html static/elements/article-list.html static/elements/article-detail.html -i static/elements/shared.html'
+]));
 
 gulp.task('watch', function() {
     gulp.watch([
@@ -58,4 +63,4 @@ gulp.task('watch', function() {
     ], ['default']);
 });
 
-gulp.task('default', ['vulcanize']);
+gulp.task('default', ['shard']);

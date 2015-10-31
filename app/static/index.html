@@ -30,7 +30,7 @@ PERF IMPROVEMENTS
   <link rel="import" href="elements/critical.html">
 
   <!-- Async non-critical elements -->
-  <link rel="import" href="non-critical.html" async>
+  <!-- <link rel="import" href="non-critical.html" async> -->
 
   <!-- Inline critical styles -->
   <style>
@@ -173,16 +173,7 @@ PERF IMPROVEMENTS
 
   <template is="dom-bind" id="app">
 
-    <!-- setup routes -->
-    <div on-route-change="_routeChange">
-      <carbon-router route="{{route}}"></carbon-router>
-      <carbon-route route="{{route}}" matches=":category" category="{{category}}" subroute="{{subroute}}">
-      </carbon-route>
-      <carbon-route route="{{subroute}}" matches=":page" page="{{page}}" subroute="{{title}}">
-      </carbon-route>
-    </div>
-
-    <app-drawer-layout drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
+    <app-drawer-layout drawer-width="288px" responsive-width="1280px">
 
       <!-- nav panel -->
       <app-header-layout drawer has-scrolling-region>
@@ -200,13 +191,13 @@ PERF IMPROVEMENTS
         </app-header>
 
         <!-- nav menu -->
-        <iron-selector class="nav-menu" selected="{{category}}" attr-for-selected="name" on-iron-activate="_showList">
-          <a name="art" href="#/art/list">Art</a>
-          <a name="film" href="#/film/list">Film</a>
-          <a name="photography" href="#/photography/list">Photography</a>
-          <a name="design" href="#/design/list">Design</a>
-          <a name="topten" href="#/topten/list">Top Ten</a>
-          <a name="aday" href="#/aday/list">A Day in the Life</a>
+        <iron-selector class="nav-menu" attr-for-selected="name" selected="{{category}}">
+          <a name="art" href="art/list">Art</a>
+          <a name="film" href="film/list">Film</a>
+          <a name="photography" href="photography/list">Photography</a>
+          <a name="design" href="design/list">Design</a>
+          <a name="topten" href="topten/list">Top Ten</a>
+          <a name="aday" href="aday/list">A Day in the Life</a>
         </iron-selector>
 
       </app-header-layout>
@@ -232,7 +223,7 @@ PERF IMPROVEMENTS
           <!-- Here the router toggles between different sections of the site -->
           <!-- The sections are lazy imported before the page changes -->
 
-          <iron-pages attr-for-selected="name">
+          <iron-pages attr-for-selected="name" selected="{{pageType}}">
 
             <!-- list page -->
             <article-list name="list" list="{{list}}"></article-list>
@@ -255,15 +246,6 @@ PERF IMPROVEMENTS
   <script>
     // Set route
     var app = document.querySelector('#app');
-
-    app._routeChange = function(route) {
-      if (!this.route) {
-        // Default route
-        this.async(function() {
-          this.route = 'art/list';
-        }, 0);
-      }
-    };
 
     // Start loading content immediately
     var req = new XMLHttpRequest();
