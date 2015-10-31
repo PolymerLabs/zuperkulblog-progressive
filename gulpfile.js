@@ -10,11 +10,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 'use strict';
 
 var gulp = require('gulp');
+var del = require('del');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
 var merge = require('merge-stream');
 
-gulp.task('copy', function() {
+gulp.task('clean', function() {
+  return del(['dist']);
+});
+
+gulp.task('copy', ['clean'], function() {
   var app = gulp.src([
       'app/static/index.html',
       'app/static/favicon.ico',
@@ -30,8 +35,8 @@ gulp.task('copy', function() {
   return merge(app, bower);
 });
 
-gulp.task('vulcanize', function() {
-  return gulp.src('app/static/index.html')
+gulp.task('vulcanize', ['copy'], function() {
+  return gulp.src('app/static/elements/critical.html')
       .pipe(vulcanize({
           abspath: '',
           excludes: [],
@@ -42,7 +47,7 @@ gulp.task('vulcanize', function() {
       //     scriptInHead: true,
       //     onlySplit: false
       // }))
-      .pipe(gulp.dest('dist/static'));
+      .pipe(gulp.dest('dist/static/elements'));
 });
 
 gulp.task('watch', function() {
@@ -53,4 +58,4 @@ gulp.task('watch', function() {
     ], ['default']);
 });
 
-gulp.task('default', ['copy', 'vulcanize']);
+gulp.task('default', ['vulcanize']);

@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "app-layout": "PolymerLabs/app-layout#~0.0.4",
-    "carbon-elements": "PolymerLabs/carbon-elements",
+    "carbon-elements": "PolymerElements/carbon-elements#e05cc4479f1a3d42c695478e2cdf8ef1b21bd3cc",
     "iron-elements": "PolymerElements/iron-elements#~1.0.4",
     "paper-elements": "PolymerElements/paper-elements#~1.0.5"
   }

@@ -14,8 +14,8 @@ PERF IMPROVEMENTS
 - async import
 - no <body unresolved>
 - move markup of blog-app into dom-bind template in main page - something to paint, faster
-- vulcanize + crisper --script-in-head - load elements.v.js at bottom of main page to parallelize download
-- fetch() instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
+- vulcanize + crisper --script-in-head
+- XHR instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
 -->
 
 <!doctype html>
@@ -26,8 +26,11 @@ PERF IMPROVEMENTS
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>ZUPERK&Uuml;LBLOG</title>
 
-  <!-- Import critical elements -->
+  <!-- Immediately import critical elements -->
   <link rel="import" href="elements/critical.html">
+
+  <!-- Async non-critical elements -->
+  <link rel="import" href="non-critical.html" async>
 
   <!-- Inline critical styles -->
   <style>
@@ -224,13 +227,21 @@ PERF IMPROVEMENTS
 
         </app-header>
 
-        <!-- 2-columns grid -->
         <section class="content-area">
-          <two-columns-grid column-width="396" gutter="4">
-            <template is="dom-repeat" items="{{articles.art}}">
-              <a is="article-headline" href="#/art/detail/{{item.title}}" article="{{item}}"></a>
-            </template>
-          </two-columns-grid>
+
+          <!-- Here the router toggles between different sections of the site -->
+          <!-- The sections are lazy imported before the page changes -->
+
+          <iron-pages attr-for-selected="name">
+
+            <!-- list page -->
+            <article-list name="list" list="{{list}}"></article-list>
+
+            <!-- detail page -->
+            <article-detail name="detail" article="{{article}}"></article-detail>
+
+          </iron-pages>
+
         </section>
 
       </app-header-layout>
@@ -242,23 +253,25 @@ PERF IMPROVEMENTS
   <!-- <script src="scripts/app.js"></script> -->
 
   <script>
-    (function() {
-      'use strict';
+    // Set route
+    var app = document.querySelector('#app');
 
+    app._routeChange = function(route) {
+      if (!this.route) {
+        // Default route
+        this.async(function() {
+          this.route = 'art/list';
+        }, 0);
+      }
+    };
 
-      var app = document.querySelector('#app');
-      app.page = 'list';
-      app.route = 'art/list';
-
-      // Start loading content immediately
-      var req = new XMLHttpRequest();
-      req.addEventListener('load', function() {
-        app.articles = JSON.parse(this.responseText);
-      });
-      req.open('GET', 'data/articles.json');
-      req.send();
-
-    }());
+    // Start loading content immediately
+    var req = new XMLHttpRequest();
+    req.addEventListener('load', function() {
+      app.articles = JSON.parse(this.responseText);
+    });
+    req.open('GET', 'data/articles.json');
+    req.send();
   </script>
 
 </body>
