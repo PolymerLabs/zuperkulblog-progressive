@@ -31,7 +31,7 @@ gulp.task('copy', function() {
 });
 
 gulp.task('vulcanize', function() {
-  return gulp.src('app/static/elements/elements.html')
+  return gulp.src('app/static/index.html')
       .pipe(vulcanize({
           abspath: '',
           excludes: [],
@@ -42,14 +42,14 @@ gulp.task('vulcanize', function() {
       //     scriptInHead: true,
       //     onlySplit: false
       // }))
-      .pipe(gulp.dest('dist/static/elements'));
+      .pipe(gulp.dest('dist/static'));
 });
 
 gulp.task('watch', function() {
     gulp.watch([
       'app/static/index.html',
       'app/static/favicon.ico',
-      'app/static/{data,scripts}/**/*'
+      'app/static/{data,scripts,elements}/**/*'
     ], ['default']);
 });
 

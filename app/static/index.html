@@ -26,7 +26,8 @@ PERF IMPROVEMENTS
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>ZUPERK&Uuml;LBLOG</title>
 
-  <!-- <link id="bundle" rel="import" href="elements/elements.html"> -->
+  <!-- Import critical elements -->
+  <link rel="import" href="elements/critical.html">
 
   <!-- Inline critical styles -->
   <style>
@@ -54,6 +55,32 @@ PERF IMPROVEMENTS
       width: 288px;
     }
 
+    app-header-layout[drawer]:unresolved .nav-menu {
+      display: block;
+      margin-top: 128px;
+    }
+
+    .nav-menu {
+      color: #fff;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    .nav-menu > a {
+      display: block;
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .nav-menu > a.iron-selected {
+      background-color: #888;
+    }
+
     app-header-layout[main]:unresolved > app-header:unresolved {
       border-bottom: 1px solid #ddd;
       background-color: #fff;
@@ -69,6 +96,11 @@ PERF IMPROVEMENTS
       right: 0;
       left: 0;
       z-index: 1;
+    }
+
+    app-header-layout[main]:unresolved .content-area {
+      margin-top: 129px;
+      margin-left: 288px;
     }
 
     app-toolbar:unresolved {
@@ -94,7 +126,7 @@ PERF IMPROVEMENTS
       justify-content: center;
     }
 
-    .title {
+    .site-title {
       padding-bottom: 40px;
       font-size: 60px;
       font-weight: 800;
@@ -121,7 +153,7 @@ PERF IMPROVEMENTS
       }
 
       /* make title smaller to fit on screen */
-      .title {
+      .site-title {
         font-size: 40px;
         padding-bottom: 16px;
       }
@@ -133,46 +165,98 @@ PERF IMPROVEMENTS
 
 <body>
 
-  <app-drawer-layout drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
+  <template is="dom-bind" id="app">
 
-    <!-- nav panel -->
-    <app-header-layout drawer has-scrolling-region>
+    <!-- setup routes -->
+    <div on-route-change="_routeChange">
+      <carbon-router route="{{route}}"></carbon-router>
+      <carbon-route route="{{route}}" matches=":category" category="{{category}}" subroute="{{subroute}}">
+      </carbon-route>
+      <carbon-route route="{{subroute}}" matches=":page" page="{{page}}" subroute="{{title}}">
+      </carbon-route>
+    </div>
 
-      <app-header fixed>
+    <app-drawer-layout drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
 
-        <!-- top toolbar -->
-        <app-toolbar></app-toolbar>
+      <!-- nav panel -->
+      <app-header-layout drawer has-scrolling-region>
 
-        <!-- bottom toolbar -->
-        <app-toolbar>
-          <div id="navTitle" class="title">ZUPERK&Uuml;LBLOG</div>
-        </app-toolbar>
+        <app-header fixed>
 
-      </app-header>
+          <!-- top toolbar -->
+          <app-toolbar></app-toolbar>
 
-    </app-header-layout>
+          <!-- bottom toolbar -->
+          <app-toolbar>
+            <div id="navTitle" class="site-title">ZUPERK&Uuml;LBLOG</div>
+          </app-toolbar>
 
-    <!-- main panel -->
-    <app-header-layout main>
+        </app-header>
 
-      <app-header fixed waterfall>
+        <!-- nav menu -->
+        <iron-selector class="nav-menu" selected="{{category}}" attr-for-selected="name" on-iron-activate="_showList">
+          <a name="art" href="#/art/list">Art</a>
+          <a name="film" href="#/film/list">Film</a>
+          <a name="photography" href="#/photography/list">Photography</a>
+          <a name="design" href="#/design/list">Design</a>
+          <a name="topten" href="#/topten/list">Top Ten</a>
+          <a name="aday" href="#/aday/list">A Day in the Life</a>
+        </iron-selector>
 
-        <!-- top toolbar -->
-        <app-toolbar>
-        </app-toolbar>
+      </app-header-layout>
 
-        <!-- bottom toolbar -->
-        <app-toolbar class="main-title-toolbar">
-          <div id="mainTitle" class="title">ZUPERK&Uuml;LBLOG</div>
-        </app-toolbar>
+      <!-- main panel -->
+      <app-header-layout main>
 
-      </app-header>
+        <app-header fixed waterfall>
 
-    </app-header-layout>
+          <!-- top toolbar -->
+          <app-toolbar>
+          </app-toolbar>
 
-  </app-drawer-layout>
+          <!-- bottom toolbar -->
+          <app-toolbar class="main-title-toolbar">
+            <div id="mainTitle" class="site-title">ZUPERK&Uuml;LBLOG</div>
+          </app-toolbar>
+
+        </app-header>
+
+        <!-- 2-columns grid -->
+        <section class="content-area">
+          <two-columns-grid column-width="396" gutter="4">
+            <template is="dom-repeat" items="{{articles.art}}">
+              <a is="article-headline" href="#/art/detail/{{item.title}}" article="{{item}}"></a>
+            </template>
+          </two-columns-grid>
+        </section>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+
+  </template>
 
   <!-- <script src="scripts/app.js"></script> -->
+
+  <script>
+    (function() {
+      'use strict';
+
+
+      var app = document.querySelector('#app');
+      app.page = 'list';
+      app.route = 'art/list';
+
+      // Start loading content immediately
+      var req = new XMLHttpRequest();
+      req.addEventListener('load', function() {
+        app.articles = JSON.parse(this.responseText);
+      });
+      req.open('GET', 'data/articles.json');
+      req.send();
+
+    }());
+  </script>
 
 </body>
 
