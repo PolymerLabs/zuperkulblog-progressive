@@ -22,6 +22,7 @@
     "gulp-crisper": "0.0.7",
     "gulp-vulcanize": "^6.0.1",
     "http2-push-manifest": "0.0.2",
-    "merge-stream": "^1.0.0"
+    "merge-stream": "^1.0.0",
+    "web-component-shards": "^1.1.3"
   }
 }
