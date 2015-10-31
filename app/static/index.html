@@ -144,12 +144,15 @@ PERF IMPROVEMENTS
     @media (max-width: 580px) {
 
       app-header-layout[drawer]:unresolved {
-        position: relative;
-        visibility: hidden;
+        display: none;
       }
 
       app-header-layout[main]:unresolved > app-header:unresolved {
         left: 0;
+      }
+
+      app-header-layout[main]:unresolved .content-area {
+        margin-left: 0;
       }
 
       /* make title smaller to fit on screen */
