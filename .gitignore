@@ -4,3 +4,4 @@ http2push.pyc
 main.pyc
 .DS_Store
 dist
+tmp
