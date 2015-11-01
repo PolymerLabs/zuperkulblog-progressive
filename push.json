@@ -1,6 +1,7 @@
 {
+  "/elements/shared.html": 1,
   "/elements/critical.html": 1,
-  "/elements/critical.js": 1,
+  "/elements/non-critical.html": 1,
   "/scripts/app.js": 1,
   "/bower_components/promise-polyfill/Promise.js": 1,
   "/data/articles.json": 1

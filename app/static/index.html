@@ -26,11 +26,9 @@ PERF IMPROVEMENTS
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>ZUPERK&Uuml;LBLOG</title>
 
-  <!-- Immediately import critical elements -->
+  <!-- Immediately import critical & shared elements -->
+  <link rel="import" href="elements/shared.html">
   <link rel="import" href="elements/critical.html">
-
-  <!-- Async non-critical elements -->
-  <!-- <link rel="import" href="non-critical.html" async> -->
 
   <!-- Inline critical styles -->
   <style>
@@ -255,6 +253,11 @@ PERF IMPROVEMENTS
     req.open('GET', 'data/articles.json');
     req.send();
   </script>
+
+  <!-- Finally load non-critical elements -->
+  <!-- Is a link tag allowed here? Could the router do this? -->
+  <!-- Async doesn't seem to work, throws an error :\ -->
+  <link rel="import" href="elements/non-critical.html">
 
 </body>
 
