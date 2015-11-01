@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-6-revert
+version: 0-0-7-sw
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -12,6 +12,29 @@ handlers:
 - url: /favicon.ico
   static_files: dist/static/favicon.ico
   upload: dist/static/favicon.ico
+  secure: always
+
+- url: /manifest.json
+  static_files: dist/static/manifest.json
+  upload: dist/static/manifest.json
+  secure: always
+
+- url: /sw-import.js
+  static_files: dist/static/sw-import.js
+  upload: dist/static/sw-import.js
+  secure: always
+
+- url: /bootstrap
+  static_dir: dist/static/bower_components/platinum-sw/bootstrap
+  secure: always
+
+- url: /sw-toolbox
+  static_dir: dist/static/bower_components/sw-toolbox
+  secure: always
+
+- url: /cache-config.json
+  static_files: dist/static/cache-config.json
+  upload: dist/static/cache-config.json
   secure: always
 
 - url: /scripts

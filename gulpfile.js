@@ -13,9 +13,12 @@ var gulp = require('gulp');
 var del = require('del');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
-var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
-var shell = require('gulp-shell');
+var glob = require('glob');
+var crypto = require('crypto');
+var path = require('path');
+var fs = require('fs');
+var packageJson = require('./package.json');
 
 gulp.task('clean', function() {
   return del(['dist']);
@@ -23,16 +26,16 @@ gulp.task('clean', function() {
 
 gulp.task('copy', ['clean'], function() {
   var app = gulp.src([
-      'app/static/index.html',
-      'app/static/favicon.ico',
-      'app/static/{data,scripts,images}/**/*'
+      'app/static/**/*',
+      '!app/static/elements/**/*',
+      '!app/static/bower_components/**/*'
     ])
     .pipe(gulp.dest('dist/static'));
 
   var bower = gulp.src([
-      'app/static/bower_components/webcomponentsjs/**/*'
+      'app/static/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox}/**/*'
     ])
-    .pipe(gulp.dest('dist/static/bower_components/webcomponentsjs'));
+    .pipe(gulp.dest('dist/static/bower_components'));
 
   return merge(app, bower);
 });
@@ -49,9 +52,39 @@ gulp.task('vulcanize', ['copy'], function() {
       .pipe(gulp.dest('dist/static'));
 });
 
-// gulp.task('shard', ['copy'], shell.task([
-//   'node_modules/.bin/web-component-shards -r app -e static/elements/critical.html static/elements/non-critical.html static/elements/article-list.html static/elements/article-detail.html -i static/elements/shared.html'
-// ]));
+// Generate config data for the <sw-precache-cache> element.
+// This include a list of files that should be precached, as well as a (hopefully unique) cache
+// id that ensure that multiple PSK projects don't share the same Cache Storage.
+// This task does not run by default, but if you are interested in using service worker caching
+// in your project, please enable it within the 'default' task.
+// See https://github.com/PolymerElements/polymer-starter-kit#enable-service-worker-support
+// for more context.
+gulp.task('cache-config', ['copy'], function(callback) {
+  var dir = 'dist/static';
+  var config = {
+    cacheId: packageJson.name,
+    disabled: false
+  };
+
+  glob('{data,scripts}/**/*.*', {cwd: dir}, function(error, files) {
+    if (error) {
+      callback(error);
+    } else {
+      files.push(
+        './',
+        'bower_components/webcomponentsjs/webcomponents-lite.min.js'
+      );
+      config.precache = files;
+
+      var md5 = crypto.createHash('md5');
+      md5.update(JSON.stringify(config.precache));
+      config.precacheFingerprint = md5.digest('hex');
+
+      var configPath = path.join(dir, 'cache-config.json');
+      fs.writeFile(configPath, JSON.stringify(config), callback);
+    }
+  });
+});
 
 gulp.task('watch', function() {
     gulp.watch([
@@ -61,4 +94,4 @@ gulp.task('watch', function() {
     ], ['default']);
 });
 
-gulp.task('default', ['vulcanize']);
+gulp.task('default', ['vulcanize', 'cache-config']);

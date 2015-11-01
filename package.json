@@ -18,6 +18,7 @@
   "homepage": "https://github.com/robdodson/zuperkulblog#readme",
   "devDependencies": {
     "del": "^2.0.2",
+    "glob": "^5.0.15",
     "gulp": "^3.9.0",
     "gulp-crisper": "0.0.7",
     "gulp-shell": "^0.5.1",

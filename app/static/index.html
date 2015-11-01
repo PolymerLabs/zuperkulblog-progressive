@@ -13,7 +13,6 @@ PERF IMPROVEMENTS
 - async wc-lite.js
 - async import
 - no <body unresolved>
-- move markup of blog-app into dom-bind template in main page - something to paint, faster
 - vulcanize + crisper --script-in-head
 - XHR instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
 -->
@@ -24,9 +23,11 @@ PERF IMPROVEMENTS
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>ZUPERK&Uuml;LBLOG</title>
+  <title>Zuperk&uuml;lblog</title>
 
-  <link rel="import" href="elements/blog-app.html">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="import" href="elements/elements.html">
 
   <style>
 
@@ -45,6 +46,16 @@ PERF IMPROVEMENTS
   <template is="dom-bind" id="app">
 
     <blog-app articles="{{articles}}"></blog-app>
+
+    <platinum-sw-register auto-register
+                          clients-claim
+                          skip-waiting
+                          state="{{state}}">
+      <platinum-sw-cache default-cache-strategy="fastest"
+                         cache-config-file="cache-config.json">
+      </platinum-sw-cache>
+    </platinum-sw-register>
+
 
   </template>
 
