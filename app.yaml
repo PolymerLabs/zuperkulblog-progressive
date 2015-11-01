@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-5-import-crisp-router
+version: 0-0-6-revert
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -28,6 +28,10 @@ handlers:
 
 - url: /data
   static_dir: dist/static/data
+  secure: always
+
+- url: /images
+  static_dir: dist/static/images
   secure: always
 
 - url: .*
