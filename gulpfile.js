@@ -33,7 +33,7 @@ gulp.task('copy', ['clean'], function() {
     .pipe(gulp.dest('dist/static'));
 
   var bower = gulp.src([
-      'app/static/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox}/**/*'
+      'app/static/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill}/**/*'
     ])
     .pipe(gulp.dest('dist/static/bower_components'));
 

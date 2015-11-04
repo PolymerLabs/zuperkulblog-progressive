@@ -25,5 +25,6 @@
   "start_url": "/?homescreen=1",
   "background_color": "#3E4EB8",
   "display": "standalone",
-  "theme_color": "#FFFFFF"
+  "theme_color": "#FFFFFF",
+  "gcm_sender_id": "375263294458"
 }

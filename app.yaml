@@ -19,6 +19,7 @@ handlers:
   upload: dist/static/manifest.json
   secure: always
 
+# Platinum Service Worker
 - url: /sw-import.js
   static_files: dist/static/sw-import.js
   upload: dist/static/sw-import.js
@@ -35,6 +36,12 @@ handlers:
 - url: /cache-config.json
   static_files: dist/static/cache-config.json
   upload: dist/static/cache-config.json
+  secure: always
+
+# Platinum Push Messaging
+- url: /service-worker.js
+  static_files: dist/static/service-worker.js
+  upload: dist/static/service-worker.js
   secure: always
 
 - url: /scripts
