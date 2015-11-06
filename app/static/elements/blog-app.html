@@ -169,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <!-- nav menu -->
-        <iron-selector class="nav-menu" selected="{{category}}" attr-for-selected="name">
+        <iron-selector class="nav-menu" selected="{{category}}" attr-for-selected="name" on-iron-activate="_showList">
           <a name="art" href="#/art/list">Art</a>
           <a name="film" href="#/film/list">Film</a>
           <a name="photography" href="#/photography/list">Photography</a>
@@ -203,7 +203,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <!-- list/detail pages -->
-        <iron-pages selected="{{section}}" attr-for-selected="name">
+        <iron-pages selected="{{page}}" attr-for-selected="name">
 
           <section name="list">
             <!-- 2-columns grid -->
@@ -243,8 +243,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          */
         page: String,
 
-        section: String,
-
         /**
          * The selected article title.
          */
@@ -272,6 +270,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return value1 === value2;
       },
 
+      _showList: function() {
+        this.page = 'list';
+      },
+
       _routeChange: function(route) {
         if (!route) {
           // default route
@@ -282,18 +284,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _categoryChange: function(category) {
         this._fetchContent(category, function(data) {
           this.articles = data;
-          this.section = 'list';
         }.bind(this));
       },
 
       _slugChange: function(slug) {
         if (!slug) {
-          this.section = 'list';
           return;
         }
         this._fetchContent(slug, function(data) {
           this.article = data;
-          this.section = 'detail';
         }.bind(this));
       },
 
