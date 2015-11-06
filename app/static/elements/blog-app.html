@@ -19,6 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -37,6 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
 
       :host {
+        --default-primary-color: #00BCD4;
         --app-primary-color: #404040;
       }
 
@@ -120,6 +122,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #bbb;
       }
 
+      .push-opt-in {
+        border-top: 1px solid grey;
+        color: white;
+        padding: 12px 16px;
+        font-size: 20px;
+        font-weight: 500;
+        margin-top: 48px;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+
+      .push-opt-in > paper-toggle-button {
+
+      }
+
       @media (max-width: 580px) {
 
         /* make title smaller to fit on screen */
@@ -178,7 +195,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a name="aday" href="#/aday/list">A Day in the Life</a>
         </iron-selector>
 
-        <paper-toggle-button id="enable-push" toggles></paper-toggle-button>
+        <div class="push-opt-in">
+          <span class="flex">Enable Push Notifications</span>
+          <paper-toggle-button id="enable-push" toggles></paper-toggle-button>
+        </div>
 
       </app-header-layout>
 
