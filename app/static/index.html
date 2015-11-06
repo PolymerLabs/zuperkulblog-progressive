@@ -48,10 +48,29 @@ PERF IMPROVEMENTS
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="elements/elements.html">
+  <!-- 1. Async HTML Imports do not block rending. Benefit of keeping it declarative
+       (instead of dynamically loading it later in JS) is that the parser can go
+       to town pre-fetching resources, etc. -->
+  <link rel="import" id="bundle" href="elements/elements.html" async>
 
   <style>
+    body.loading #splash {
+      opacity: 1;
+    }
+
+    /*#splash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: opacity 300ms cubic-bezier(0,0,0.2,1);
+      opacity: 0;
+      will-change: opacity;
+      z-index: 1;
+      background: url(...) no-repeat;
+      background-color: #E53935;
+    }*/
 
     body {
       margin: 0;
@@ -63,8 +82,18 @@ PERF IMPROVEMENTS
 
 </head>
 
-<body>
+<!-- 2. Don't use <body unresolved>. It's a simple FOUC solution, but hides
+     the page until imports and Polymer are loaded. Intead, control FOUC manually with
+     a splash screen. -->
+<body class="loading">
 
+  <!-- 3. Light weight splash screen is outside of Polymer/imports and styled by
+       the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
+       one could create an "app shell" and style the page's un-upgraded elements
+       similar to their final upgraded version. -->
+  <div id="splash"></div>
+
+  <!-- Elements wait on the page and are upgraded when elements.html loads. -->
   <blog-app></blog-app>
 
   <!-- <platinum-sw-register auto-register
@@ -75,6 +104,7 @@ PERF IMPROVEMENTS
     </platinum-sw-cache>
   </platinum-sw-register> -->
 
+  <script src="scripts/app.js" async></script>
 </body>
 
 </html>
