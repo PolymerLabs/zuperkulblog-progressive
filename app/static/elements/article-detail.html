@@ -84,7 +84,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
-    <div class="image" style$="background-color: {{article.primaryColor}}; background-image: url('{{article.image}}')"></div>
+    <!-- Restamp this div to prevent image FOUC -->
+    <template is="dom-if" if="{{article.image}}" restamp="true">
+      <div class="image" style$="background-color: {{article.primaryColor}}; background-image: url('{{article.image}}')"></div>
+    </template>
 
     <div class="header">
       <div>{{article.author}}</div>
