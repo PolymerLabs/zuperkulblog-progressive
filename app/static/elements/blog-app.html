@@ -27,6 +27,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/app-scrollpos-control/app-scrollpos-control.html">
 
+<link rel="import" href="../bower_components/platinum-push-messaging/platinum-push-messaging.html">
+
 <link rel="import" href="article-headline.html">
 <link rel="import" href="article-detail.html">
 <link rel="import" href="two-columns-grid.html">
@@ -197,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <div class="push-opt-in">
           <span class="flex">Enable Push Notifications</span>
-          <paper-toggle-button id="enable-push" toggles></paper-toggle-button>
+          <paper-toggle-button id="toggle" toggles checked="{{pushEnabled}}"></paper-toggle-button>
         </div>
 
       </app-header-layout>
@@ -245,6 +247,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </app-drawer-layout>
 
+    <platinum-push-messaging id="push" enabled="{{pushEnabled}}"
+      message-url="https://zuperkulblog-push.herokuapp.com/notification-data.json">
+    </platinum-push-messaging>
+
   </template>
 
   <script>
@@ -287,6 +293,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_categoryChange(category)',
         '_slugChange(slug)'
       ],
+
+      attached: function() {
+        // Setup Push
+        var ppm = this.$.push;
+        var toggle = this.$.toggle;
+
+        var previousSubscriptionId;
+
+        // If push messaging isn't a thing, disable the ui.
+        toggle.disabled = !ppm.supported;
+
+        toggle.addEventListener('change', function() {
+          if (toggle.checked) {
+            ppm.enable();
+          } else {
+            ppm.disable();
+          }
+        });
+
+        ppm.addEventListener('subscription-changed', function(event) {
+          // GCM always needs the subscriptionId passed separately. Note that as of M45,
+          // the subscriptionId and the endpoint have merged.
+          var subscriptionId = ppm.subscription ? ppm.subscription.subscriptionId : undefined;
+          if (ppm.subscription && !ppm.subscription.subscriptionId) {
+            var endpointSections = ppm.subscription.endpoint.split('/');
+            subscriptionId = endpointSections[endpointSections.length - 1];
+          }
+
+          if (subscriptionId)
+            previousSubscriptionId = subscriptionId;
+        });
+
+        ppm.addEventListener('platinum-push-messaging-error', function(event) {
+          console.log('error', event.detail);
+        });
+
+        ppm.addEventListener('enabled-changed', function(event) {
+          toggle.checked = ppm.enabled;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://zuperkulblog-push.herokuapp.com/subscription_change');
+          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+          // There's no response in the success case.
+          xhr.onerror = function() {
+            console.log("Couldn't send subscription to server.");
+          };
+          xhr.send('enabled=' + ppm.enabled + '&id=' + previousSubscriptionId);
+        });
+      },
 
       _equal: function(value1, value2) {
         return value1 === value2;

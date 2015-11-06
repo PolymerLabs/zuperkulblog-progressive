@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-10-async-polyfills
+version: 0-0-11-push-toggle
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -39,7 +39,7 @@ handlers:
   secure: always
 
 # Platinum Push Messaging
-- url: /service-worker.js
+- url: /elements/service-worker.js
   static_files: dist/static/service-worker.js
   upload: dist/static/service-worker.js
   secure: always
