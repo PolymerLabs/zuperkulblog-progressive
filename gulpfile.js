@@ -41,7 +41,7 @@ gulp.task('copy', ['clean'], function() {
 });
 
 gulp.task('vulcanize', ['copy'], function() {
-  return gulp.src('app/static/index.html')
+  return gulp.src('app/static/elements/elements.html')
       .pipe(vulcanize({
         stripComments: true
       }))
@@ -49,7 +49,7 @@ gulp.task('vulcanize', ['copy'], function() {
       //   scriptInHead: true,
       //   onlySplit: false
       // }))
-      .pipe(gulp.dest('dist/static'));
+      .pipe(gulp.dest('dist/static/elements'));
 });
 
 // Generate config data for the <sw-precache-cache> element.

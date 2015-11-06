@@ -145,7 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- setup routes -->
     <carbon-router route="{{route}}"></carbon-router>
     <carbon-route route="{{route}}" matches=":category" category="{{category}}" subroute="{{subroute}}"></carbon-route>
-    <carbon-route route="{{subroute}}" matches=":page" page="{{page}}" subroute="{{title}}"></carbon-route>
+    <carbon-route route="{{subroute}}" matches=":page" page="{{page}}" subroute="{{slug}}"></carbon-route>
 
     <!-- manages page's scroll position -->
     <app-scrollpos-control selected="{{category}}"></app-scrollpos-control>
@@ -205,44 +205,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- list/detail pages -->
         <iron-pages selected="{{page}}" attr-for-selected="name">
 
-          <!-- list page -->
-          <iron-pages name="list" selected="{{category}}" attr-for-selected="name">
-
-            <!-- 'art' category page (lazy-loaded) -->
-            <template is="dom-if" if="{{_equal(category, 'art')}}">
-              <section name="art">
-
-                <!-- 2-columns grid -->
-                <two-columns-grid column-width="396" gutter="4">
-                  <template is="dom-repeat" items="{{articles.art}}">
-                    <a is="article-headline" href="#/art/detail/{{item.title}}" article="{{item}}"></a>
-                  </template>
-                </two-columns-grid>
-
-              </section>
-            </template>
-
-            <!-- 'film' category page (lazy-loaded) -->
-            <template is="dom-if" if="{{_equal(category, 'film')}}">
-              <section name="film">
-
-                <!-- 2-columns grid -->
-                <two-columns-grid column-width="396" gutter="4">
-                  <template is="dom-repeat" items="{{articles.film}}">
-                    <a is="article-headline" href="#/film/detail/{{item.title}}" article="{{item}}"></a>
-                  </template>
-                </two-columns-grid>
-
-              </section>
-            </template>
-
-            <!-- other categories -->
-            <section name="photography" class="no-contents">Photography (No Contents)</section>
-            <section name="design" class="no-contents">Design (No Contents)</section>
-            <section name="topten" class="no-contents">Top Ten (No Contents)</section>
-            <section name="aday" class="no-contents">A Day in the Life (No Contents)</section>
-
-          </iron-pages>
+          <section name="list">
+            <!-- 2-columns grid -->
+            <two-columns-grid column-width="396" gutter="4">
+              <template is="dom-repeat" items="{{articles}}">
+                <a is="article-headline" href="#/{{category}}/detail/{{item.slug}}" article="{{item}}"></a>
+              </template>
+            </two-columns-grid>
+          </section>
 
           <!-- detail page -->
           <article-detail name="detail" article="{{article}}"></article-detail>
@@ -281,13 +251,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         /**
          * Articles data.
          */
-        articles: Object
+        articles: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        }
 
       },
 
       observers: [
-        '_updateArticle(articles, category, title)',
-        '_routeChange(route)'
+        '_routeChange(route)',
+        '_categoryChange(category)',
+        '_slugChange(slug)'
       ],
 
       _equal: function(value1, value2) {
@@ -305,16 +281,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      _updateArticle: function(articles, category, title) {
-        var as = articles[category];
-        if (as) {
-          for (var i=0, a; a=as[i]; i++) {
-            if (a.title === title) {
-              this.article = a;
-              return;
-            }
-          }
+      _categoryChange: function(category) {
+        this._fetchContent(category, function(data) {
+          this.articles = data;
+        }.bind(this));
+      },
+
+      _slugChange: function(slug) {
+        if (!slug) {
+          return;
         }
+        this._fetchContent(slug, function(data) {
+          this.article = data;
+        }.bind(this));
+      },
+
+      _fetchContent: function(url, cb) {
+        // Fetch doesn't seem to reuse connections with h2 push
+        // so using XHR instead
+        var req = new XMLHttpRequest();
+        req.addEventListener('load', function() {
+          cb(JSON.parse(this.responseText));
+        });
+        req.open('GET', 'data/'+url+'.json');
+        req.send();
       },
 
       // position nav title to be on top of the main title.

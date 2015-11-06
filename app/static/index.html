@@ -13,7 +13,7 @@ PERF IMPROVEMENTS
 - async wc-lite.js
 - async import
 - no <body unresolved>
-- vulcanize + crisper --script-in-head
+- vulcanize
 - XHR instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
 -->
 
@@ -48,6 +48,7 @@ PERF IMPROVEMENTS
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="elements/elements.html">
 
   <style>
@@ -64,32 +65,15 @@ PERF IMPROVEMENTS
 
 <body>
 
-  <template is="dom-bind" id="app">
+  <blog-app></blog-app>
 
-    <blog-app articles="{{articles}}"></blog-app>
-
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting>
-      <platinum-sw-cache default-cache-strategy="fastest"
-                         cache-config-file="cache-config.json">
-      </platinum-sw-cache>
-    </platinum-sw-register>
-
-
-  </template>
-
-  <script>
-    var app = document.querySelector('#app');
-
-    // Start loading content immediately
-    var req = new XMLHttpRequest();
-    req.addEventListener('load', function() {
-      app.articles = JSON.parse(this.responseText);
-    });
-    req.open('GET', 'data/articles.json');
-    req.send();
-  </script>
+  <!-- <platinum-sw-register auto-register
+                        clients-claim
+                        skip-waiting>
+    <platinum-sw-cache default-cache-strategy="fastest"
+                       cache-config-file="cache-config.json">
+    </platinum-sw-cache>
+  </platinum-sw-register> -->
 
 </body>
 

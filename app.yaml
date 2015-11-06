@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-7-sw
+version: 0-0-9-fetch
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -24,7 +24,7 @@ handlers:
   upload: dist/static/sw-import.js
   secure: always
 
-- url: /bootstrap
+- url: /elements/bootstrap
   static_dir: dist/static/bower_components/platinum-sw/bootstrap
   secure: always
 
