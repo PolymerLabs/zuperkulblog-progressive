@@ -36,5 +36,5 @@ class MainHandler(http2.PushHandler):
     return self.response.write(c)
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/', MainHandler)
 ], debug=True)
