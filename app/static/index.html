@@ -59,6 +59,77 @@ PERF IMPROVEMENTS
       font-family: 'Roboto', 'Noto', sans-serif;
       background-color: #fafafa;
     }
+
+    #splash {
+      display: none;
+    }
+
+    #splash .drawer {
+      position: fixed;
+      top: 0;
+      right: auto;
+      bottom: 0;
+      left: 0;
+      background-color: #404040;
+      width: 288px;
+    }
+
+    #splash .main > .app-header {
+      display: block;
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      border-bottom: 1px solid #ddd;
+      background-color: #fff;
+      color: #444;
+      transform: translate3d(0px, 0px, 0px);
+      left: 288px;
+    }
+
+    #splash .app-toolbar {
+      height: 64px;
+      padding: 0 16px;
+      position: relative;
+      pointer-events: none;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    #splash .site-title {
+      padding-bottom: 40px;
+      font-size: 60px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 1280px) {
+      #splash .drawer {
+        display: none;
+      }
+
+      #splash .main > .app-header {
+        left: 0;
+      }
+    }
+
+    @media (max-width: 580px) {
+      /* make title smaller to fit on screen */
+      #splash .site-title {
+        font-size: 40px;
+        padding-bottom: 16px;
+      }
+    }
   </style>
 
 </head>
@@ -68,12 +139,24 @@ PERF IMPROVEMENTS
      a splash screen. -->
 <body class="loading">
 
-  <!-- 3. Light weight splash screen is outside of Polymer/imports and styled by
+  <!-- 3. Light weight skeleton is outside of Polymer/imports and styled by
        the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
        one could create an "app shell" and style the page's un-upgraded elements
        similar to their final upgraded version. -->
   <div id="splash">
-    <h1>ZUPERK&Uuml;LBLOG</h1>
+    <!-- drawer panel -->
+    <div class="drawer"></div>
+    <!-- main panel -->
+    <div class="main">
+      <div class="app-header">
+        <!-- top toolbar -->
+        <div class="app-toolbar"></div>
+        <!-- bottom toolbar -->
+        <div class="app-toolbar">
+          <div class="site-title">ZUPERK&Uuml;LBLOG</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Elements wait on the page and are upgraded when elements.html loads. -->
