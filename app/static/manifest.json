@@ -22,8 +22,8 @@
         "sizes": "384x384",
         "type": "image/png"
       }],
-  "start_url": "/?homescreen=1",
-  "background_color": "#3E4EB8",
+  "start_url": "/",
+  "background_color": "#497886",
   "display": "standalone",
   "theme_color": "#FFFFFF",
   "gcm_sender_id": "375263294458"
