@@ -60,10 +60,6 @@ PERF IMPROVEMENTS
       background-color: #fafafa;
     }
 
-    #splash {
-      display: none;
-    }
-
     #splash .drawer {
       position: fixed;
       top: 0;
@@ -137,7 +133,7 @@ PERF IMPROVEMENTS
 <!-- 2. Don't use <body unresolved>. It's a simple FOUC solution, but hides
      the page until imports and Polymer are loaded. Intead, control FOUC manually with
      a splash screen. -->
-<body class="loading">
+<body>
 
   <!-- 3. Light weight skeleton is outside of Polymer/imports and styled by
        the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
