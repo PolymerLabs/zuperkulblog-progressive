@@ -171,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-scrollpos-control selected="{{category}}"></app-scrollpos-control>
     <app-scrollpos-control selected="{{page}}" reset></app-scrollpos-control>
 
-    <app-drawer-layout drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
+    <app-drawer-layout id="drawerLayout" drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
 
       <!-- nav panel -->
       <app-header-layout drawer has-scrolling-region>
@@ -296,6 +296,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       attached: function() {
+        // Enable drawer animations (these have been disabled to help with
+        // first paint). Use technique described here:
+        // https://github.com/Polymer/polymer/issues/2149
+        this.$.drawerLayout.customStyle['--app-drawer-duration'] = '0.2s';
+        this.$.drawerLayout.updateStyles();
+
         // Setup Push
         var ppm = this.$.push;
         var toggle = this.$.toggle;
