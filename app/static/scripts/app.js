@@ -47,88 +47,80 @@ function finishLazyLoading() {
 // More info: https://visionmedia.github.io/page.js/
 // Middleware
 
-(function() {
+var blog = document.querySelector('blog-app');
 
-  var blog = document.querySelector('blog-app');
-
-  /**
-   * Go get some data unitz!
-   */
-  function ajax(url, cb) {
-    // Native fetch doesn't seem to reuse connections with h2 push
-    // so using XHR instead
-    var req = new XMLHttpRequest();
-    req.addEventListener('load', function() {
-      cb(JSON.parse(this.responseText));
-    });
-    req.open('GET', '/data/'+url+'.json');
-    req.send();
-  }
-
-  /**
-   * Utility function to listen to an event on a node once.
-   */
-  function once(node, event, fn, args) {
-    var self = this;
-    var listener = function() {
-      fn.apply(self, args);
-      node.removeEventListener(event, listener, false);
-    };
-    node.addEventListener(event, listener, false);
-  }
-
-  /**
-   * Routes
-   */
-  page('/:category/list', function(ctx) {
-    var category = ctx.params.category;
-    ajax(category, function(data) {
-
-      function setData() {
-        console.log('setting data', data);
-        blog.articles = data;
-        blog.category = category;
-        blog.page = 'list';
-      }
-
-      // Check if element prototype has not been upgraded yet
-      if (blog.category === undefined) {
-        console.log('setting once listener');
-        once(blog, 'attached', setData);
-      } else {
-        console.log('setting data');
-        setData();
-      }
-
-    });
+/**
+ * Go get some data unitz!
+ */
+function ajax(url, cb) {
+  // Native fetch doesn't seem to reuse connections with h2 push
+  // so using XHR instead
+  var req = new XMLHttpRequest();
+  req.addEventListener('load', function() {
+    cb(JSON.parse(this.responseText));
   });
+  req.open('GET', '/data/'+url+'.json');
+  req.send();
+}
 
-  page('/:category/detail/:slug', function(ctx) {
-    var category = ctx.params.category;
-    ajax(ctx.params.slug, function(data) {
+/**
+ * Utility function to listen to an event on a node once.
+ */
+function once(node, event, fn, args) {
+  var self = this;
+  var listener = function() {
+    fn.apply(self, args);
+    node.removeEventListener(event, listener, false);
+  };
+  node.addEventListener(event, listener, false);
+}
 
-      function setData() {
-        console.log('setting data', blog.article);
-        blog.page = 'detail';
-        blog.category = category;
-        blog.article = data;
-      }
+/**
+ * Routes
+ */
+page('/:category/list', function(ctx) {
+  var category = ctx.params.category;
+  ajax(category, function(data) {
 
-      // Check if element prototype has not been upgraded yet
-      if (blog.category === undefined) {
-        once(blog, 'attached', setData);
-      } else {
-        setData();
-      }
+    function setData() {
+      blog.articles = data;
+      blog.category = category;
+      blog.page = 'list';
+    }
 
-    });
+    // Check if element prototype has not been upgraded yet
+    if (!blog.upgraded) {
+      once(blog, 'upgraded', setData);
+    } else {
+      setData();
+    }
+
   });
+});
 
-  page('*', function() {
-    console.log('Can\'t find: ' + window.location.href  + '. Redirected you to Home Page');
-    page.redirect('/art/list');
+page('/:category/detail/:slug', function(ctx) {
+  var category = ctx.params.category;
+  ajax(ctx.params.slug, function(data) {
+
+    function setData() {
+      blog.page = 'detail';
+      blog.category = category;
+      blog.article = data;
+    }
+
+    // Check if element prototype has not been upgraded yet
+    if (!blog.upgraded) {
+      once(blog, 'upgraded', setData);
+    } else {
+      setData();
+    }
+
   });
+});
 
-  page();
+page('*', function() {
+  console.log('Can\'t find: ' + window.location.href  + '. Redirected you to Home Page');
+  page.redirect('/art/list');
+});
 
-}());
+page();

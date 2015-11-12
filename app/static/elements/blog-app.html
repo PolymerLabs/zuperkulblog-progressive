@@ -278,14 +278,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: function() {
             return {};
           }
-        }
+        },
+
+        /**
+         * Signal to the outside world that this element
+         * has been upgraded. Set in ready
+         * https://github.com/Polymer/polymer/issues/2653
+         */
+        upgraded: Boolean
 
       },
 
-      attached: function() {
+      ready: function() {
         // Let the world know we're ready to receive data
-        this.fire('attached');
+        // https://github.com/Polymer/polymer/issues/2653
+        this.fire('upgraded');
+        this.upgraded = true;
+      },
 
+      attached: function() {
         // Enable drawer animations (these have been disabled to help with
         // first paint). Use technique described here:
         // https://github.com/Polymer/polymer/issues/2149
