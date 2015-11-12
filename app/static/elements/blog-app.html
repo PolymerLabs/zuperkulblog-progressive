@@ -10,8 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/carbon-elements/carbon-router.html">
-
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
@@ -25,7 +23,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-layout/app-scrollpos-control/app-scrollpos-control.html">
 
 <link rel="import" href="../bower_components/platinum-push-messaging/platinum-push-messaging.html">
 
@@ -162,15 +159,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
-    <!-- setup routes -->
-    <carbon-router route="{{route}}"></carbon-router>
-    <carbon-route route="{{route}}" matches=":category" category="{{category}}" subroute="{{subroute}}"></carbon-route>
-    <carbon-route route="{{subroute}}" matches=":page" page="{{page}}" subroute="{{slug}}"></carbon-route>
-
-    <!-- manages page's scroll position -->
-    <!-- <app-scrollpos-control selected="{{category}}"></app-scrollpos-control> -->
-    <!-- <app-scrollpos-control selected="{{page}}" reset></app-scrollpos-control> -->
-
     <app-drawer-layout id="drawerLayout" drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
 
       <!-- nav panel -->
@@ -189,13 +177,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <!-- nav menu -->
-        <iron-selector class="nav-menu" selected="{{category}}" attr-for-selected="name">
-          <a name="art" href="#/art/list">Art</a>
-          <a name="film" href="#/film/list">Film</a>
-          <a name="photography" href="#/photography/list">Photography</a>
-          <a name="design" href="#/design/list">Design</a>
-          <a name="topten" href="#/topten/list">Top Ten</a>
-          <a name="aday" href="#/aday/list">A Day in the Life</a>
+        <iron-selector class="nav-menu" selected="[[category]]" attr-for-selected="name">
+          <a name="art" href="/art/list">Art</a>
+          <a name="film" href="/film/list">Film</a>
+          <a name="photography" href="/photography/list">Photography</a>
+          <a name="design" href="/design/list">Design</a>
+          <a name="topten" href="/topten/list">Top Ten</a>
+          <a name="aday" href="/aday/list">A Day in the Life</a>
         </iron-selector>
 
         <div class="push-opt-in">
@@ -213,9 +201,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- top toolbar -->
           <app-toolbar>
             <!-- menu button -->
-            <paper-icon-button icon="app:menu" drawer-toggle hidden$="{{_equal(page, 'detail')}}"></paper-icon-button>
+            <paper-icon-button icon="app:menu" drawer-toggle hidden$="[[_equal(page, 'detail')]]"></paper-icon-button>
             <!-- back button -->
-            <a href="#/{{category}}/list" hidden$="{{_equal(page, 'list')}}">
+            <a href="/[[category]]/list" hidden$="[[_equal(page, 'list')]]">
               <paper-icon-button icon="app:arrow-back"></paper-icon-button>
             </a>
           </app-toolbar>
@@ -228,19 +216,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <!-- list/detail pages -->
-        <iron-pages selected="{{section}}" attr-for-selected="name">
+        <iron-pages selected="[[page]]" attr-for-selected="name">
 
           <section name="list">
             <!-- 2-columns grid -->
             <two-columns-grid column-width="396" gutter="4">
-              <template is="dom-repeat" items="{{articles}}">
-                <a is="article-headline" href="#/{{category}}/detail/{{item.slug}}" article="{{item}}"></a>
+              <template is="dom-repeat" items="[[articles]]">
+                <a is="article-headline" href="/[[category]]/detail/[[item.slug]]" article="[[item]]"></a>
               </template>
             </two-columns-grid>
           </section>
 
           <!-- detail page -->
-          <article-detail name="detail" article="{{article}}"></article-detail>
+          <article-detail name="detail" article="[[article]]"></article-detail>
 
         </iron-pages>
 
@@ -273,11 +261,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         page: String,
 
         /**
-         * The selected article title.
-         */
-        title: String,
-
-        /**
          * Articles data.
          */
         articles: {
@@ -285,17 +268,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: function() {
             return [];
           }
+        },
+
+        /**
+         * Article data.
+         */
+        article: {
+          type: Object,
+          value: function() {
+            return {};
+          }
         }
 
       },
 
-      observers: [
-        '_routeChange(route)',
-        '_categoryChange(category)',
-        '_slugChange(slug)'
-      ],
-
       attached: function() {
+        // Let the world know we're ready to receive data
+        this.fire('attached');
+
         // Enable drawer animations (these have been disabled to help with
         // first paint). Use technique described here:
         // https://github.com/Polymer/polymer/issues/2149
@@ -353,48 +343,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _equal: function(value1, value2) {
         return value1 === value2;
-      },
-
-      _routeChange: function(route) {
-        if (!route) {
-          // default route
-          this.route = 'art/list'
-        }
-      },
-
-      _categoryChange: function(category) {
-        this._fetchContent(category, function(data) {
-          this.articles = data;
-          this.async(function() {
-            this.section = 'list';
-          }.bind(this), 0);
-        }.bind(this));
-      },
-
-      _slugChange: function(slug) {
-        if (!slug) {
-          this.async(function() {
-            this.section = 'list';
-          }.bind(this), 0);
-          return;
-        }
-        this._fetchContent(slug, function(data) {
-          this.article = data;
-          this.async(function() {
-            this.section = 'detail';
-          }.bind(this), 0);
-        }.bind(this));
-      },
-
-      _fetchContent: function(url, cb) {
-        // Fetch doesn't seem to reuse connections with h2 push
-        // so using XHR instead
-        var req = new XMLHttpRequest();
-        req.addEventListener('load', function() {
-          cb(JSON.parse(this.responseText));
-        });
-        req.open('GET', 'data/'+url+'.json');
-        req.send();
       },
 
       // position nav title to be on top of the main title.

@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-13-skeleton
+version: 0-0-14-pagejs
 runtime: python27
 api_version: 1
 threadsafe: yes

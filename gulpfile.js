@@ -10,6 +10,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 'use strict';
 
 var gulp = require('gulp');
+var useref = require('gulp-useref');
+var gulpif = require('gulp-if');
+var uglify = require('gulp-uglify');
 var del = require('del');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
@@ -27,6 +30,8 @@ gulp.task('clean', function() {
 gulp.task('copy', ['clean'], function() {
   var app = gulp.src([
       'app/static/**/*',
+      '!app/static/index.html',
+      '!app/static/scripts/**/*',
       '!app/static/elements/**/*',
       '!app/static/bower_components/**/*'
     ])
@@ -40,10 +45,18 @@ gulp.task('copy', ['clean'], function() {
   return merge(app, bower);
 });
 
+gulp.task('html', ['clean'], function() {
+  return gulp.src('app/static/index.html')
+    .pipe(useref())
+    .pipe(gulpif('*.js', uglify()))
+    .pipe(gulp.dest('dist/static'));
+});
+
 gulp.task('vulcanize', ['copy'], function() {
   return gulp.src('app/static/elements/elements.html')
       .pipe(vulcanize({
-        stripComments: true
+        stripComments: true,
+        inlineScripts: true
       }))
       // .pipe(crisper({
       //   scriptInHead: true,
@@ -86,7 +99,7 @@ gulp.task('cache-config', ['copy'], function(callback) {
   });
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['default'], function() {
     gulp.watch([
       'app/static/index.html',
       'app/static/favicon.ico',
@@ -94,4 +107,4 @@ gulp.task('watch', function() {
     ], ['default']);
 });
 
-gulp.task('default', ['vulcanize', 'cache-config']);
+gulp.task('default', ['html', 'vulcanize', 'cache-config']);
