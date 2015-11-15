@@ -187,8 +187,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-selector>
 
         <div class="push-opt-in">
-          <span class="flex">Enable Push Notifications</span>
-          <paper-toggle-button id="toggle" toggles checked="{{pushEnabled}}"></paper-toggle-button>
+          <span class="flex" id="toggle-label">Notify Me of <br>New Content</span>
+          <paper-toggle-button id="toggle" aria-labelledby="toggle-label"
+              toggles checked="{{pushEnabled}}">
+          </paper-toggle-button>
         </div>
 
       </app-header-layout>
@@ -201,9 +203,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- top toolbar -->
           <app-toolbar>
             <!-- menu button -->
-            <paper-icon-button icon="app:menu" drawer-toggle hidden$="[[_equal(page, 'detail')]]"></paper-icon-button>
+            <paper-icon-button icon="app:menu" drawer-toggle hidden$="[[_equal(page, 'detail')]]" aria-label="menu"></paper-icon-button>
             <!-- back button -->
-            <a href="/[[category]]/list" hidden$="[[_equal(page, 'list')]]">
+            <a href="/[[category]]/list" hidden$="[[_equal(page, 'list')]]" aria-label="back">
               <paper-icon-button icon="app:arrow-back"></paper-icon-button>
             </a>
           </app-toolbar>

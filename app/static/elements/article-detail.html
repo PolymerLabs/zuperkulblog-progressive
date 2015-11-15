@@ -89,17 +89,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="image" style$="background-color: {{article.primaryColor}}; background-image: url('{{article.image}}')"></div>
     </template>
 
-    <div class="header">
-      <div>{{article.author}}</div>
-      <div class="title" style$="color: {{article.secondaryColor}};">{{article.title}}</div>
-      <div>{{article.date}}</div>
-      <paper-fab icon="app:googleplus-reshare"></paper-fab>
-    </div>
+    <article>
+      <div class="header">
+        <address class="author">{{article.author}}</address>
+        <div class="title" style$="color: {{article.secondaryColor}};">{{article.title}}</div>
+        <time>{{article.date}}</time>
+        <paper-fab icon="app:googleplus-reshare" aria-label="Reshare article"></paper-fab>
+      </div>
 
-    <section class="main">
-      <h3>{{article.desc}}</h3>
-      <p>{{article.content}}</p>
-    </section>
+      <section class="main">
+        <h3>{{article.desc}}</h3>
+        <p>{{article.content}}</p>
+      </section>
+    </article>
 
   </template>
 
