@@ -22,10 +22,10 @@ function finishLazyLoading() {
   // by the Shadow DOM to point to <blog-app>
   // window.Polymer = window.Polymer || {dom: 'shadow'};
 
-  // 6. Fade splash screen, then remove.
+  // 6. Remove skeleton
   var onImportLoaded = function() {
-    var splash = document.getElementById('splash');
-    splash.remove();
+    var skeleton = document.getElementById('skeleton');
+    skeleton.remove();
 
     console.log('Elements are upgraded!');
   };

@@ -59,7 +59,7 @@ PERF IMPROVEMENTS
       background-color: #fafafa;
     }
 
-    #splash .drawer {
+    #skeleton .drawer {
       position: fixed;
       top: 0;
       right: auto;
@@ -69,7 +69,7 @@ PERF IMPROVEMENTS
       width: 288px;
     }
 
-    #splash .main > .app-header {
+    #skeleton .main > .app-header {
       display: block;
       position: fixed;
       top: 0;
@@ -82,7 +82,7 @@ PERF IMPROVEMENTS
       left: 288px;
     }
 
-    #splash .app-toolbar {
+    #skeleton .app-toolbar {
       height: 64px;
       padding: 0 16px;
       position: relative;
@@ -102,25 +102,25 @@ PERF IMPROVEMENTS
       font-size: 20px;
     }
 
-    #splash .site-title {
+    #skeleton .site-title {
       padding-bottom: 40px;
       font-size: 60px;
       font-weight: 800;
     }
 
     @media (max-width: 1280px) {
-      #splash .drawer {
+      #skeleton .drawer {
         display: none;
       }
 
-      #splash .main > .app-header {
+      #skeleton .main > .app-header {
         left: 0;
       }
     }
 
     @media (max-width: 580px) {
       /* make title smaller to fit on screen */
-      #splash .site-title {
+      #skeleton .site-title {
         font-size: 40px;
         padding-bottom: 16px;
       }
@@ -131,14 +131,14 @@ PERF IMPROVEMENTS
 
 <!-- 2. Don't use <body unresolved>. It's a simple FOUC solution, but hides
      the page until imports and Polymer are loaded. Intead, control FOUC manually with
-     a splash screen. -->
+     a skeleton. -->
 <body>
 
   <!-- 3. Light weight skeleton is outside of Polymer/imports and styled by
        the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
        one could create an "app shell" and style the page's un-upgraded elements
        similar to their final upgraded version. -->
-  <div id="splash">
+  <div id="skeleton">
     <!-- drawer panel -->
     <div class="drawer"></div>
     <!-- main panel -->
