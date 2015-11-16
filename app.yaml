@@ -1,5 +1,5 @@
 application: zuperkulblog
-version: 0-0-15
+version: 0-0-16
 runtime: python27
 api_version: 1
 threadsafe: yes
