@@ -209,7 +209,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- menu button -->
             <paper-icon-button icon="app:menu" drawer-toggle hidden$="[[_equal(page, 'detail')]]" aria-label="menu"></paper-icon-button>
             <!-- back button -->
-            <a href="/[[category]]/list" hidden$="[[_equal(page, 'list')]]" aria-label="back">
+            <a href="/[[category]]/list" hidden$="[[_equal(page, 'list', 'no-contents')]]" aria-label="back">
               <paper-icon-button icon="app:arrow-back"></paper-icon-button>
             </a>
           </app-toolbar>
@@ -235,6 +235,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- detail page -->
           <article-detail name="detail" article="[[article]]"></article-detail>
+
+          <!-- no content page -->
+          <section name="no-contents" class="no-contents">
+            We don't have any articles for this section yet. <br>We're working on it!
+          </section>
 
         </iron-pages>
 
@@ -358,8 +363,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-      _equal: function(value1, value2) {
-        return value1 === value2;
+      _equal: function() {
+        var isEqual = false;
+        var options = Array.prototype.slice.call(arguments);
+        var target = options.shift();
+        options.forEach(function(option) {
+          if (target == option) {
+            isEqual = true;
+          }
+        });
+        return isEqual;
       },
 
       // position nav title to be on top of the main title.

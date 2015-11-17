@@ -57,7 +57,14 @@ function ajax(url, cb) {
   // so using XHR instead
   var req = new XMLHttpRequest();
   req.addEventListener('load', function() {
-    cb(JSON.parse(this.responseText));
+    var data;
+    var error;
+    try {
+      data = JSON.parse(this.responseText);
+    } catch(err) {
+      error = err;
+    }
+    cb(error, data);
   });
   req.open('GET', '/data/'+url+'.json');
   req.send();
@@ -77,12 +84,19 @@ function once(node, event, fn, args) {
 
 /**
  * Routes
+ * I'd like to DRY these up more possibly with middleware
  */
 page('/:category/list', function(ctx) {
   var category = ctx.params.category;
-  ajax(category, function(data) {
+  ajax(category, function(err, data) {
 
     function setData() {
+      if (err) {
+        blog.category = category;
+        blog.page = 'no-contents';
+        return;
+      }
+
       blog.articles = data;
       blog.category = category;
       blog.page = 'list';
@@ -100,7 +114,7 @@ page('/:category/list', function(ctx) {
 
 page('/:category/detail/:slug', function(ctx) {
   var category = ctx.params.category;
-  ajax(ctx.params.slug, function(data) {
+  ajax(ctx.params.slug, function(err, data) {
 
     function setData() {
       blog.page = 'detail';
