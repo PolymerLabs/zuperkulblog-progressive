@@ -84,7 +84,7 @@ function once(node, event, fn, args) {
 
 /**
  * Routes
- * I'd like to DRY these up more possibly with middleware
+ * I'd like to DRY these up more. Possibly with middleware
  */
 page('/:category/list', function(ctx) {
   var category = ctx.params.category;
@@ -100,6 +100,7 @@ page('/:category/list', function(ctx) {
       blog.articles = data;
       blog.category = category;
       blog.page = 'list';
+      window.scrollTo(0, 0);
     }
 
     // Check if element prototype has not been upgraded yet
@@ -120,6 +121,7 @@ page('/:category/detail/:slug', function(ctx) {
       blog.page = 'detail';
       blog.category = category;
       blog.article = data;
+      window.scrollTo(0, 0);
     }
 
     // Check if element prototype has not been upgraded yet
