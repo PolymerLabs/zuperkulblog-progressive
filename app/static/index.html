@@ -8,12 +8,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-PERF IMPROVEMENTS
-- async wc-lite.js
-- async import
-- no <body unresolved>
-- vulcanize
-- XHR instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
+
+ What this demo demonstrates:
+
+ - Phase 1: index.html loads with top-level app structure and enough styling
+            to get non-upgraded elements into place. This is your app shell.
+
+ - Phase 2: critical.html loads async, carrying just Polymer and `my-app`
+            definition.  `my-app` is a body type extension that implements
+            Polymer.LightDomBindingBehavior, which scans its light-DOM template
+            for bindings (rather than a template).  At this point, my-app
+            upgrades and can poke any data brought in the critical section into
+            its template, and definitions for non-critical elements are
+            async lazy-loaded.
+
+ - Phase 3: elements.html loads async, carrying remaining element definitions
+            `x-produces` and `x-consumes`.  These elements upgrade and are
+            late-bound to any host data and can participate in normal
+            binding with the host.
+
+  Throttle the loading speed in the devtools Network panel to ~"Good 3G" to
+  get a nice view of the 3 phases.
+
 -->
 
 <!doctype html>
@@ -47,10 +63,8 @@ PERF IMPROVEMENTS
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="/images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <!-- 1. Async HTML Imports do not block rending. Benefit of keeping it declarative
-       (instead of dynamically loading it later in JS) is that the parser can go
-       to town pre-fetching resources, etc. -->
-  <link rel="import" id="bundle" href="/elements/elements.html" async>
+  <!-- Phase 2: Async load Polymer & critical elements (just my-app) -->
+  <!-- <link rel="import" id="bundle" href="/elements/critical.html" async> -->
 
   <style>
     body {
@@ -59,7 +73,7 @@ PERF IMPROVEMENTS
       background-color: #fafafa;
     }
 
-    #skeleton .drawer {
+    app-header-layout[drawer]:unresolved {
       position: fixed;
       top: 0;
       right: auto;
@@ -69,7 +83,7 @@ PERF IMPROVEMENTS
       width: 288px;
     }
 
-    #skeleton .main > .app-header {
+    app-header-layout[main]:unresolved > app-header:unresolved {
       display: block;
       position: fixed;
       top: 0;
@@ -82,7 +96,7 @@ PERF IMPROVEMENTS
       left: 288px;
     }
 
-    #skeleton .app-toolbar {
+    app-toolbar:unresolved {
       height: 64px;
       padding: 0 16px;
       position: relative;
@@ -102,25 +116,42 @@ PERF IMPROVEMENTS
       font-size: 20px;
     }
 
-    #skeleton .site-title {
+    .title {
       padding-bottom: 40px;
       font-size: 60px;
       font-weight: 800;
     }
 
+    #navTitle {
+      display: none;
+    }
+
+    iron-selector.nav-menu:unresolved > a {
+      display: block;
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #FFF;
+    }
+
+    iron-selector.nav-menu:unresolved > a.iron-selected {
+      background-color: #888;
+    }
+
     @media (max-width: 1280px) {
-      #skeleton .drawer {
+      app-header-layout[drawer]:unresolved {
         display: none;
       }
 
-      #skeleton .main > .app-header {
+      app-header-layout[main]:unresolved > app-header:unresolved {
         left: 0;
       }
     }
 
     @media (max-width: 580px) {
       /* make title smaller to fit on screen */
-      #skeleton .site-title {
+      .title {
         font-size: 40px;
         padding-bottom: 16px;
       }
@@ -129,42 +160,116 @@ PERF IMPROVEMENTS
 
 </head>
 
-<!-- 2. Don't use <body unresolved>. It's a simple FOUC solution, but hides
-     the page until imports and Polymer are loaded. Intead, control FOUC manually with
-     a skeleton. -->
-<body>
+<!--
+  If my-app didn't need event handlers, default data, computed functions,
+  etc. and only needed binding ala dom-bind, it could just use is="body-bind",
+  which is a no-frills implementation of Polymer.LightDomBindingBehavior.
+  Since we do, using the behavior on a `body` Custom Element type extension
+  allows us to write the top-level app element idiomatically using all the
+  features of a normal element.
+-->
+<!-- <body is="body-bind"> -->
+<body is="my-app">
 
-  <!-- 3. Light weight skeleton is outside of Polymer/imports and styled by
-       the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
-       one could create an "app shell" and style the page's un-upgraded elements
-       similar to their final upgraded version. -->
-  <div id="skeleton">
-    <!-- drawer panel -->
-    <div class="drawer"></div>
-    <!-- main panel -->
-    <div class="main">
-      <div class="app-header">
+  <!-- Phase 1: This stuff renders with above provided document styles -->
+  <!-- `my-app` won't be upgraded until Phase 2 -->
+
+  <app-drawer-layout id="drawerLayout" drawer-width="288px" responsive-width="1280px" on-iron-resize="_positionNavTitle">
+
+    <!-- nav panel -->
+    <app-header-layout drawer has-scrolling-region>
+
+      <app-header fixed>
+
         <!-- top toolbar -->
-        <div class="app-toolbar"></div>
+        <app-toolbar></app-toolbar>
+
         <!-- bottom toolbar -->
-        <div class="app-toolbar">
-          <div class="site-title">ZUPERK&Uuml;LBLOG</div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <app-toolbar>
+          <div id="navTitle" class="title">ZUPERK&Uuml;LBLOG</div>
+        </app-toolbar>
 
-  <!-- Elements wait on the page and are upgraded when elements.html loads. -->
-  <blog-app></blog-app>
+      </app-header>
 
-  <platinum-sw-register auto-register
+      <!-- nav menu -->
+      <iron-selector class="nav-menu" selected="[[category]]" attr-for-selected="name" activate-event="click">
+        <a name="art" href="/art/list">Art</a>
+        <a name="film" href="/film/list">Film</a>
+        <a name="photography" href="/photography/list">Photography</a>
+        <a name="design" href="/design/list">Design</a>
+        <a name="topten" href="/topten/list">Top Ten</a>
+        <a name="aday" href="/aday/list">A Day in the Life</a>
+      </iron-selector>
+
+      <!-- <div class="push-opt-in">
+        <span class="flex" id="toggle-label">Notify Me of <br>New Content</span>
+        <paper-toggle-button id="toggle" aria-labelledby="toggle-label"
+            toggles checked="{{pushEnabled}}">
+        </paper-toggle-button>
+      </div> -->
+
+    </app-header-layout>
+
+    <!-- main panel -->
+    <app-header-layout main>
+
+      <app-header fixed waterfall>
+
+        <!-- top toolbar -->
+        <app-toolbar>
+          <!-- menu button -->
+          <paper-icon-button icon="app:menu" drawer-toggle hidden$="[[_equal(page, 'detail')]]" aria-label="menu"></paper-icon-button>
+          <!-- back button -->
+          <a href="/[[category]]/list" hidden$="[[_equal(page, 'list', 'no-contents')]]" aria-label="back">
+            <paper-icon-button icon="app:arrow-back"></paper-icon-button>
+          </a>
+        </app-toolbar>
+
+        <!-- bottom toolbar -->
+        <app-toolbar class="main-title-toolbar">
+          <div id="mainTitle" class="title">ZUPERK&Uuml;LBLOG</div>
+        </app-toolbar>
+
+      </app-header>
+
+      <iron-pages selected="[[page]]" attr-for-selected="name">
+
+        <!-- list page -->
+        <section name="list" class="iron-selected">
+          <two-columns-grid column-width="396" gutter="4">
+            <template is="dom-repeat" items="[[articles]]">
+              <a is="article-headline" href="/[[category]]/detail/[[item.slug]]" article="[[item]]"></a>
+            </template>
+          </two-columns-grid>
+        </section>
+
+        <!-- detail page -->
+        <section name="detail">
+          <article-detail article="[[article]]"></article-detail>
+        </section>
+
+        <!-- no contents page -->
+        <section name="no-contents" class="no-contents">
+          We don't have any articles for this section yet. <br>We're working on it!
+        </section>
+
+      </iron-pages>
+
+    </app-header-layout>
+
+  </app-drawer-layout>
+
+  <!-- Service workers are great but make developing a pain in the butt. Uncomment
+       when you've got the site looking how you want it. -->
+
+  <!-- <platinum-sw-register auto-register
                         clients-claim
                         skip-waiting
                         href="/sw-import.js">
     <platinum-sw-cache default-cache-strategy="fastest"
                        cache-config-file="/cache-config.json">
     </platinum-sw-cache>
-  </platinum-sw-register>
+  </platinum-sw-register> -->
 
   <!-- build:js /scripts/app.js async -->
   <script src="/bower_components/page/page.js"></script>

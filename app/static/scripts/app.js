@@ -24,9 +24,6 @@ function finishLazyLoading() {
 
   // 6. Remove skeleton
   var onImportLoaded = function() {
-    var skeleton = document.getElementById('skeleton');
-    skeleton.remove();
-
     console.log('Elements are upgraded!');
   };
 
@@ -46,97 +43,9 @@ function finishLazyLoading() {
 // client-side router inspired by the Express router
 // More info: https://visionmedia.github.io/page.js/
 // Middleware
-
-var blog = document.querySelector('blog-app');
-
-/**
- * Go get some data unitz!
- */
-function ajax(url, cb) {
-  // Native fetch doesn't seem to reuse connections with h2 push
-  // so using XHR instead
-  var req = new XMLHttpRequest();
-  req.addEventListener('load', function() {
-    var data;
-    var error;
-    try {
-      data = JSON.parse(this.responseText);
-    } catch(err) {
-      error = err;
-    }
-    cb(error, data);
-  });
-  req.open('GET', '/data/'+url+'.json');
-  req.send();
-}
-
-/**
- * Utility function to listen to an event on a node once.
- */
-function once(node, event, fn, args) {
-  var self = this;
-  var listener = function() {
-    fn.apply(self, args);
-    node.removeEventListener(event, listener, false);
-  };
-  node.addEventListener(event, listener, false);
-}
-
-/**
- * Routes
- * I'd like to DRY these up more. Possibly with middleware
- */
-page('/:category/list', function(ctx) {
-  var category = ctx.params.category;
-  ajax(category, function(err, data) {
-
-    function setData() {
-      if (err) {
-        blog.category = category;
-        blog.page = 'no-contents';
-        return;
-      }
-
-      blog.articles = data;
-      blog.category = category;
-      blog.page = 'list';
-      window.scrollTo(0, 0);
-    }
-
-    // Check if element prototype has not been upgraded yet
-    if (!blog.upgraded) {
-      once(blog, 'upgraded', setData);
-    } else {
-      setData();
-    }
-
-  });
-});
-
-page('/:category/detail/:slug', function(ctx) {
-  var category = ctx.params.category;
-  ajax(ctx.params.slug, function(err, data) {
-
-    function setData() {
-      blog.page = 'detail';
-      blog.category = category;
-      blog.article = data;
-      window.scrollTo(0, 0);
-    }
-
-    // Check if element prototype has not been upgraded yet
-    if (!blog.upgraded) {
-      once(blog, 'upgraded', setData);
-    } else {
-      setData();
-    }
-
-  });
-});
-
-page('*', function() {
-  console.log('Can\'t find: ' + window.location.href  + '. Redirected you to Home Page');
-  page.redirect('/art/list');
-});
-
-page();
+// page('*', function() {
+//   console.log('Can\'t find: ' + window.location.href  + '. Redirected you to Home Page');
+//   page.redirect('/news');
+// });
+//
+// page();

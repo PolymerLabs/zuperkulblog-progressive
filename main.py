@@ -19,21 +19,27 @@ __author__ = 'Eric Bidelman <ebidel@>'
 import os
 import sys
 import webapp2
-
-from google.appengine.ext.webapp import template
-
+import jinja2
 import http2push as http2
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.join(
+        os.path.dirname(__file__), 'dist/static')),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True,
+    variable_start_string='{{{',
+    variable_end_string='}}}')
 
 
 class MainHandler(http2.PushHandler):
 
-  @http2.push('push_manifest.json')
-  def get(self):
-    name = os.path.join(os.path.dirname(__file__), 'dist/static/index.html')
-    f = open(name, 'r')
-    c = f.read()
-    f.close()
-    return self.response.write(c)
+    @http2.push('push_manifest.json')
+    def get(self):
+        template_values = {
+            'selected_class': 'iron-selected'
+        }
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
     ('/.*', MainHandler)

@@ -53,16 +53,22 @@ gulp.task('html', ['clean'], function() {
 });
 
 gulp.task('vulcanize', ['copy'], function() {
-  return gulp.src('app/static/elements/elements.html')
-      .pipe(vulcanize({
-        stripComments: true,
-        inlineScripts: true
-      }))
-      // .pipe(crisper({
-      //   scriptInHead: true,
-      //   onlySplit: false
-      // }))
-      .pipe(gulp.dest('dist/static/elements'));
+  var critical = gulp.src('app/static/elements/critical.html')
+    .pipe(vulcanize({
+      stripComments: true,
+      inlineScripts: true
+    }))
+    .pipe(gulp.dest('dist/static/elements'));
+
+  var elements = gulp.src('app/static/elements/elements.html')
+    .pipe(vulcanize({
+      stripComments: true,
+      inlineScripts: true,
+      excludes: ['app/static/bower_components/polymer/polymer.html']
+    }))
+    .pipe(gulp.dest('dist/static/elements'));
+
+  return merge(critical, elements);
 });
 
 // Generate config data for the <sw-precache-cache> element.
