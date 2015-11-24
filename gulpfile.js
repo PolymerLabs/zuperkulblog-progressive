@@ -16,6 +16,7 @@ var uglify = require('gulp-uglify');
 var del = require('del');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
+var shell = require('gulp-shell');
 var merge = require('merge-stream');
 var glob = require('glob');
 var crypto = require('crypto');
@@ -52,24 +53,18 @@ gulp.task('html', ['clean'], function() {
     .pipe(gulp.dest('dist/static'));
 });
 
-gulp.task('vulcanize', ['copy'], function() {
-  var critical = gulp.src('app/static/elements/critical.html')
-    .pipe(vulcanize({
-      stripComments: true,
-      inlineScripts: true
-    }))
-    .pipe(gulp.dest('dist/static/elements'));
+// gulp.task('vulcanize', ['copy'], function() {
+//   return gulp.src('app/static/elements/critical.html')
+//     .pipe(vulcanize({
+//       stripComments: true,
+//       inlineScripts: true
+//     }))
+//     .pipe(gulp.dest('dist/static/elements'));
+// });
 
-  var elements = gulp.src('app/static/elements/elements.html')
-    .pipe(vulcanize({
-      stripComments: true,
-      inlineScripts: true,
-      excludes: ['app/static/bower_components/polymer/polymer.html']
-    }))
-    .pipe(gulp.dest('dist/static/elements'));
-
-  return merge(critical, elements);
-});
+gulp.task('shard', ['clean'], shell.task([
+  'node_modules/.bin/web-component-shards -r app -e static/elements/critical.html static/elements/elements.html -i static/elements/shared.html'
+]));
 
 // Generate config data for the <sw-precache-cache> element.
 // This include a list of files that should be precached, as well as a (hopefully unique) cache
@@ -113,4 +108,4 @@ gulp.task('watch', ['default'], function() {
     ], ['default']);
 });
 
-gulp.task('default', ['html', 'vulcanize', 'cache-config']);
+gulp.task('default', ['html', 'shard', 'cache-config']);

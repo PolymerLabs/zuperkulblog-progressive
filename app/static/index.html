@@ -64,16 +64,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="msapplication-TileImage" content="/images/touch/ms-touch-icon-144x144-precomposed.png">
 
   <!-- Phase 2: Async load Polymer & critical elements (just my-app) -->
-  <!-- <link rel="import" id="bundle" href="/elements/critical.html" async> -->
+  <link rel="import" id="bundle" href="/elements/critical.html" async>
 
   <style>
     body {
       margin: 0;
       font-family: 'Roboto', 'Noto', 'Helvetica', sans-serif;
+      font-size: 16px;
       background-color: #fafafa;
     }
 
-    app-header-layout[drawer]:unresolved {
+    a {
+      text-decoration: none;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    app-header-layout[drawer] {
       position: fixed;
       top: 0;
       right: auto;
@@ -83,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 288px;
     }
 
-    app-header-layout[main]:unresolved > app-header:unresolved {
+    app-header-layout[main] > app-header {
       display: block;
       position: fixed;
       top: 0;
@@ -96,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       left: 288px;
     }
 
-    app-toolbar:unresolved {
+    app-toolbar {
       height: 64px;
       padding: 0 16px;
       position: relative;
@@ -126,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       display: none;
     }
 
-    iron-selector.nav-menu:unresolved > a {
+    iron-selector.nav-menu > a {
       display: block;
       padding: 12px 16px;
       font-size: 20px;
@@ -135,16 +142,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       color: #FFF;
     }
 
-    iron-selector.nav-menu:unresolved > a.iron-selected {
+    iron-selector.nav-menu > a.iron-selected {
       background-color: #888;
     }
 
+    article-headline {
+      @apply(--shadow-transition);
+      @apply(--shadow-elevation-2dp);
+      cursor: pointer;
+    }
+
+    article-headline:hover {
+      @apply(--shadow-elevation-6dp);
+    }
+
+    article-detail {
+      max-width: 736px;
+      margin: 64px auto;
+      background-color: #fff;
+      @apply(--shadow-elevation-2dp);
+    }
+
+    .no-contents {
+      height: calc(100vh - 129px);
+      @apply(--layout-horizontal);
+      @apply(--layout-center-center);
+      padding: 8px;
+      text-align: center;
+      font-size: 26px;
+      color: #bbb;
+    }
+
+    .push-opt-in {
+      border-top: 1px solid grey;
+      color: white;
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: 500;
+      margin-top: 16px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center-center);
+    }
+
     @media (max-width: 1280px) {
-      app-header-layout[drawer]:unresolved {
+      app-header-layout[drawer] {
         display: none;
       }
 
-      app-header-layout[main]:unresolved > app-header:unresolved {
+      app-header-layout[main] > app-header {
         left: 0;
       }
     }

@@ -1,4 +1,5 @@
 {
-  "/elements/elements.html": 1,
+  "/elements/critical.html": 1,
+  "/elements/shared.html": 1,
   "/scripts/app.js": 1
 }
