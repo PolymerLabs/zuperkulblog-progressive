@@ -84,7 +84,7 @@ gulp.task('cache-config', ['copy'], function(callback) {
       callback(error);
     } else {
       files.push(
-        './',
+        '/',
         'bower_components/webcomponentsjs/webcomponents-lite.min.js'
       );
       config.precache = files;
