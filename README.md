@@ -10,6 +10,7 @@ After downloading, open the App Engine Launcher and let it setup symlinks (it sh
 ```
 git clone https://github.com/PolymerLabs/zuperkulblog-progressive
 cd zuperkulblog-progressive
+git checkout body-bind
 npm install && bower install
 gulp
 dev_appserver.py .
