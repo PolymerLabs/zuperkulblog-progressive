@@ -53,18 +53,18 @@ gulp.task('html', ['clean'], function() {
     .pipe(gulp.dest('dist/static'));
 });
 
-// gulp.task('vulcanize', ['copy'], function() {
-//   return gulp.src('app/static/elements/critical.html')
-//     .pipe(vulcanize({
-//       stripComments: true,
-//       inlineScripts: true
-//     }))
-//     .pipe(gulp.dest('dist/static/elements'));
-// });
+gulp.task('vulcanize', ['copy'], function() {
+  return gulp.src('app/static/elements/shell.html')
+    .pipe(vulcanize({
+      stripComments: true,
+      inlineScripts: true
+    }))
+    .pipe(gulp.dest('dist/static/elements'));
+});
 
-gulp.task('shard', ['clean'], shell.task([
-  'node_modules/.bin/web-component-shards -r app -e static/elements/critical.html static/elements/elements.html -i static/elements/shared.html'
-]));
+// gulp.task('shard', ['clean'], shell.task([
+//   'node_modules/.bin/web-component-shards -r app -e static/elements/critical.html static/elements/elements.html -i static/elements/shared.html'
+// ]));
 
 // Generate config data for the <sw-precache-cache> element.
 // This include a list of files that should be precached, as well as a (hopefully unique) cache
@@ -85,7 +85,8 @@ gulp.task('cache-config', ['copy'], function(callback) {
       callback(error);
     } else {
       files.push(
-        './',
+        '/',
+        'elements/shell.html',
         'bower_components/webcomponentsjs/webcomponents-lite.min.js'
       );
       config.precache = files;
@@ -108,4 +109,4 @@ gulp.task('watch', ['default'], function() {
     ], ['default']);
 });
 
-gulp.task('default', ['html', 'shard', 'cache-config']);
+gulp.task('default', ['html', 'vulcanize', 'cache-config']);

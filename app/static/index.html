@@ -7,31 +7,6 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<!--
-
- What this demo demonstrates:
-
- - Phase 1: index.html loads with top-level app structure and enough styling
-            to get non-upgraded elements into place. This is your app shell.
-
- - Phase 2: critical.html loads async, carrying just Polymer and `my-app`
-            definition.  `my-app` is a body type extension that implements
-            Polymer.LightDomBindingBehavior, which scans its light-DOM template
-            for bindings (rather than a template).  At this point, my-app
-            upgrades and can poke any data brought in the critical section into
-            its template, and definitions for non-critical elements are
-            async lazy-loaded.
-
- - Phase 3: elements.html loads async, carrying remaining element definitions
-            `x-produces` and `x-consumes`.  These elements upgrade and are
-            late-bound to any host data and can participate in normal
-            binding with the host.
-
-  Throttle the loading speed in the devtools Network panel to ~"Good 3G" to
-  get a nice view of the 3 phases.
-
--->
-
 <!doctype html>
 <html lang="en">
 
@@ -63,8 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="/images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <!-- Phase 2: Async load Polymer & critical elements (just my-app) -->
-  <link rel="import" id="bundle" href="/elements/critical.html" async>
+  <!-- Phase 2: Async load Polymer & app-shell elements -->
+  <link rel="import" id="bundle" href="/elements/shell.html" async>
 
   <style>
     body {
@@ -184,6 +159,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @apply(--layout-center-center);
     }
 
+    .flex {
+      
+    }
+
     @media (max-width: 1280px) {
       app-header-layout[drawer] {
         display: none;
@@ -246,12 +225,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <a name="aday" href="/aday/list">A Day in the Life</a>
       </iron-selector>
 
-      <!-- <div class="push-opt-in">
+      <div class="push-opt-in">
         <span class="flex" id="toggle-label">Notify Me of <br>New Content</span>
         <paper-toggle-button id="toggle" aria-labelledby="toggle-label"
             toggles checked="{{pushEnabled}}">
         </paper-toggle-button>
-      </div> -->
+      </div>
 
     </app-header-layout>
 
@@ -280,7 +259,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-pages selected="[[page]]" attr-for-selected="name">
 
         <!-- list page -->
-        <section name="list" class="iron-selected">
+        <section name="list">
           <two-columns-grid column-width="396" gutter="4">
             <template is="dom-repeat" items="[[articles]]">
               <a is="article-headline" href="/[[category]]/detail/[[item.slug]]" article="[[item]]"></a>
@@ -307,14 +286,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Service workers are great but make developing a pain in the butt. Uncomment
        when you've got the site looking how you want it. -->
 
-  <!-- <platinum-sw-register auto-register
+  <platinum-sw-register auto-register
                         clients-claim
                         skip-waiting
                         href="/sw-import.js">
     <platinum-sw-cache default-cache-strategy="fastest"
                        cache-config-file="/cache-config.json">
     </platinum-sw-cache>
-  </platinum-sw-register> -->
+  </platinum-sw-register>
 
   <!-- build:js /scripts/app.js async -->
   <script src="/bower_components/page/page.js"></script>
