@@ -160,7 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     .flex {
-      
+
     }
 
     @media (max-width: 1280px) {
@@ -262,7 +262,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <section name="list">
           <two-columns-grid column-width="396" gutter="4">
             <template is="dom-repeat" items="[[articles]]">
-              <a is="article-headline" href="/[[category]]/detail/[[item.slug]]" article="[[item]]"></a>
+              <!-- FIXME: item.category is a hack because the global category
+                          doesn't seem to be available in this scope -->
+              <a is="article-headline" href="/[[item.category]]/detail/[[item.slug]]" article="[[item]]"></a>
             </template>
           </two-columns-grid>
         </section>

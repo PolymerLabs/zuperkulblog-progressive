@@ -31,16 +31,26 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     variable_end_string='}}}')
 
 
-class MainHandler(http2.PushHandler):
+class ListHandler(http2.PushHandler):
 
     @http2.push('push_manifest.json')
-    def get(self):
-        template_values = {
-            'selected_class': 'iron-selected'
-        }
+    def get(self, category=None):
+        if category is None:
+            category = 'art'
+        self.push_urls[u'/data/' + category + '.json'] = 1;
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(template_values))
+        self.response.write(template.render())
+
+class SlugHandler(http2.PushHandler):
+
+    @http2.push('push_manifest.json')
+    def get(self, slug):
+        self.push_urls[u'/data/' + slug + '.json'] = 1;
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render())
 
 app = webapp2.WSGIApplication([
-    ('/.*', MainHandler)
+    ('/', ListHandler),
+    ('/(.*)/list', ListHandler),
+    ('/.*/detail/(.*)', SlugHandler)
 ], debug=True)
