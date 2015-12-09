@@ -17,6 +17,11 @@
     "iron-elements": "PolymerElements/iron-elements#~1.0.4",
     "paper-elements": "PolymerElements/paper-elements#~1.0.5",
     "platinum-elements": "PolymerElements/platinum-elements#~1.2.0",
-    "page": "page.js#~1.6.4"
+    "page": "page.js#~1.6.4",
+    "polymer": "Polymer/polymer#standard-layer",
+    "polymer-experiments": "polymerlabs/polymer-experiments"
+  },
+  "resolutions": {
+    "polymer": "standard-layer"
   }
 }

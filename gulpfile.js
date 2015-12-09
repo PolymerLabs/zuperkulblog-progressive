@@ -57,7 +57,8 @@ gulp.task('vulcanize', ['copy'], function() {
   return gulp.src('app/static/elements/shell.html')
     .pipe(vulcanize({
       stripComments: true,
-      inlineScripts: true
+      inlineScripts: true,
+      exclude: ['app/static/bower_components/polymer/polymer.html']
     }))
     .pipe(gulp.dest('dist/static/elements'));
 });
