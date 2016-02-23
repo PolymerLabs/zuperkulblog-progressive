@@ -2,6 +2,11 @@
 
 A Progressive Web App built with Polymer.
 
+## How it was built
+
+* [Chrome DevSummit 2015 video](https://www.youtube.com/watch?v=g7f1Az5fxgU)
+* [slides](https://speakerdeck.com/robdodson/building-progressive-web-apps-with-polymer)
+
 ## Setup
 
 This app requires the [Python App Engine SDK](https://cloud.google.com/appengine/downloads?hl=en).
